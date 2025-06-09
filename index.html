@@ -1,39 +1,155 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NFC Sender</title>
-</head>
-<body>
-  <h2>Send Unique NFC Data</h2>
-  <button id="sendBtn">Send NFC</button>
- 
-  <script>
-    // Check NFC availability
-    if ('NDEFWriter' in window) {
-      const writer = new NDEFWriter();
- 
-      document.getElementById('sendBtn').addEventListener('click', async () => {
-        try {
-          // Unique data (you can generate or fetch this dynamically)
-          const uniqueData = 'ID-' + Date.now();
- 
-          await writer.write({
-            records: [{
-              recordType: "text",
-              data: uniqueData
-            }]
-          });
- 
-          alert("NFC data sent: " + uniqueData);
-        } catch (error) {
-          alert("NFC error: " + error);
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web NFC Writer</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for better aesthetics */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Light background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1rem;
         }
-      });
-    } else {
-      alert("Web NFC is not supported on this device or browser.");
-    }
-  </script>
+        .container {
+            background-color: #ffffff;
+            border-radius: 1.5rem; /* More rounded corners */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Softer shadow */
+            max-width: 500px;
+            width: 100%;
+            padding: 2rem;
+            text-align: center;
+        }
+        .btn-primary {
+            background-image: linear-gradient(to right, #6366f1, #8b5cf6); /* Gradient background */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem; /* Rounded button */
+            font-weight: 600;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(99, 102, 241, 0.4);
+        }
+        .message-box {
+            background-color: #e2e8f0;
+            color: #2d3748;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            text-align: left;
+            word-wrap: break-word; /* Ensure long messages wrap */
+        }
+        .message-box.success {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        .message-box.error {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border: 1px solid #cbd5e0;
+            border-radius: 0.5rem;
+            box-sizing: border-box; /* Include padding in width */
+        }
+    </style>
+</head>
+<body class="font-sans antialiased">
+    <div class="container">
+        <h1 class="text-3xl font-bold mb-4 text-gray-800">Web NFC Data Writer</h1>
+        <p class="text-gray-600 mb-6">
+            Enter the text you want to write to an NFC tag.
+            <br>
+            <span class="font-semibold text-red-500">
+                Note: This requires a browser that supports Web NFC (e.g., Chrome on Android) and user permission.
+                It cannot directly open phone settings.
+            </span>
+        </p>
+
+        <div class="mb-4">
+            <label for="nfcData" class="block text-gray-700 text-sm font-bold mb-2">
+                Data to Write:
+            </label>
+            <textarea id="nfcData" rows="3" placeholder="Enter text to write to NFC tag..."
+                      class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"></textarea>
+        </div>
+
+        <button id="writeNFCButton" class="btn-primary">
+            Write to NFC Tag
+        </button>
+
+        <div id="messageBox" class="message-box hidden"></div>
+    </div>
+
+    <script>
+        // Function to display messages to the user
+        function showMessage(message, type = 'info') {
+            const messageBox = document.getElementById('messageBox');
+            messageBox.textContent = message;
+            messageBox.className = `message-box ${type}`; // Apply type-specific styling
+            messageBox.classList.remove('hidden'); // Make sure it's visible
+            console.log(`Message (${type}): ${message}`); // Log for debugging
+        }
+
+        // Function to hide the message box
+        function hideMessage() {
+            const messageBox = document.getElementById('messageBox');
+            messageBox.classList.add('hidden');
+        }
+
+        // Event listener for the button click
+        document.getElementById('writeNFCButton').addEventListener('click', async () => {
+            hideMessage(); // Clear previous messages
+            const nfcData = document.getElementById('nfcData').value;
+
+            // Check if Web NFC API is supported
+            if ('NDEFReader' in window) {
+                try {
+                    showMessage('Preparing to write to NFC tag. Tap a tag now...', 'info');
+
+                    // Create a new NDEFReader instance
+                    const ndef = new NDEFReader();
+
+                    // Connect to the NFC device and initiate a write operation
+                    await ndef.write({
+                        records: [{ recordType: "text", text: nfcData }]
+                    });
+
+                    showMessage('Successfully wrote data to NFC tag!', 'success');
+                } catch (error) {
+                    if (error.name === 'NotAllowedError') {
+                        showMessage('NFC write permission denied by user or browser. Make sure you grant permission and tap the tag promptly.', 'error');
+                    } else if (error.name === 'AbortError') {
+                        showMessage('NFC write operation aborted (e.g., user moved tag away or cancelled).', 'error');
+                    } else if (error.name === 'NetworkError') {
+                        showMessage('NFC hardware not available or turned off. Please ensure NFC is enabled on your device.', 'error');
+                    } else {
+                        showMessage(`Error writing to NFC tag: ${error.message}`, 'error');
+                    }
+                    console.error('NFC Write Error:', error);
+                }
+            } else {
+                showMessage('Web NFC is not supported in this browser or device. Please try a compatible browser (e.g., Chrome on Android).', 'error');
+            }
+        });
+
+        // Initialize textarea with a default value for convenience
+        window.addEventListener('load', () => {
+            document.getElementById('nfcData').value = 'Hello from Web NFC!';
+        });
+    </script>
 </body>
 </html>
- 
