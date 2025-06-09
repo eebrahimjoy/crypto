@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NFC Sender</title>
+</head>
+<body>
+  <h2>Send Unique NFC Data</h2>
+  <button id="sendBtn">Send NFC</button>
+ 
+  <script>
+    // Check NFC availability
+    if ('NDEFWriter' in window) {
+      const writer = new NDEFWriter();
+ 
+      document.getElementById('sendBtn').addEventListener('click', async () => {
+        try {
+          // Unique data (you can generate or fetch this dynamically)
+          const uniqueData = 'ID-' + Date.now();
+ 
+          await writer.write({
+            records: [{
+              recordType: "text",
+              data: uniqueData
+            }]
+          });
+ 
+          alert("NFC data sent: " + uniqueData);
+        } catch (error) {
+          alert("NFC error: " + error);
+        }
+      });
+    } else {
+      alert("Web NFC is not supported on this device or browser.");
+    }
+  </script>
+</body>
+</html>
+ 
