@@ -216,8 +216,8 @@ const Utils = (() => {
 // --- Module 3: App State and Core Logic (conceptual app.js) ---
 const App = (() => {
     // Valid credentials (Base64 obfuscated for client-side demo)
-    const VALID_USER = btoa('ehaan');
-    const VALID_PASS = btoa('200923');
+    const VALID_USER = btoa('secret@ehaan.com');
+    const VALID_PASS = btoa('200923@En');
 
     // Element references (will be initialized based on the current page)
     let elements = {};
@@ -672,7 +672,7 @@ const App = (() => {
 
         const reportTitle = "Daily Needs List";
         const dateGenerated = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-        const generatedBy = "Eebrahimjoy";
+        const generatedBy = "eebrahimjoy";
         const approxTotalCost = dailyNeeds.reduce((sum, item) => sum + ((item.approxPrice || 0) * (item.quantity || 1)), 0).toFixed(2);
         const footerText = `Approx. Total Cost: $${approxTotalCost}`;
 
