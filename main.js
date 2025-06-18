@@ -3,7 +3,7 @@ const CryptoModule = (() => {
     const ENCRYPT_MAP = {
         // Uppercase
         A: 'E', B: 'K', C: 'G', D: 'P', E: '!', F: 'V', G: ':', H: 'T', I: 'Q', J: 'Y',
-        K: '$', L: 'X', M: 'U', N: 'W', O: '%', P: '&', Q: '*', R: '#', S: '_', T: '×',
+        K: '$', L: 'X', M: 'U', N: 'W', O: '%', P: '&', Q: '*', R: '#', S: '-', T: '×',
         U: '_', V: '"', W: '+', X: '?', Y: '>', Z: '<',
 
         // Lowercase
