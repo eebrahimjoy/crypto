@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather & Time</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="centered-body">
+
+    <div id="toastContainer"></div>
+
+    <div class="tool-page-container">
+        <h2 class="tool-section-title">Weather & Time</h2>
+        <p class="text-center text-gray-600 mb-6">Find current weather and time for any city or your location.</p>
+
+        <div class="form-control">
+            <label for="citySearch">City/Time Zone Search:</label>
+            <input type="text" id="citySearch" placeholder="e.g., London, Asia/Dubai" class="tool-input">
+            <button id="searchWeatherTimeBtn" class="tool-button w-full">Search</button>
+        </div>
+        <div class="mt-4">
+            <button id="currentLocationWeatherTimeBtn" class="tool-button w-full">Use Current Location</button>
+        </div>
+        <div class="text-output mt-4" id="weatherTimeResult">
+            <p>Loading weather and time...</p>
+        </div>
+
+        <div class="flex justify-center mt-8">
+            <button id="backToDashboardBtn" class="btn-secondary responsive-btn">Back to Dashboard</button>
+        </div>
+    </div>
+
+    <!-- Main JavaScript file -->
+    <script src="main.js"></script>
+</body>
+</html>

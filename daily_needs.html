@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Needs List</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- jsPDF for PDF export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- jsPDF Autotable Plugin -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.autotable.min.js"></script>
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="centered-body">
+
+    <div id="toastContainer"></div>
+
+    <div class="tool-page-container">
+        <h2 class="tool-section-title">Daily Needs List</h2>
+        <p class="text-center text-gray-600 mb-6">List your daily needs with quantity and approximate price.</p>
+
+        <div class="form-control">
+            <label for="needItem">Item:</label>
+            <input type="text" id="needItem" placeholder="e.g., Milk, bread" class="tool-input">
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="form-control">
+                <label for="needApproxPrice">Approx. Price ($):</label>
+                <input type="number" id="needApproxPrice" placeholder="Optional" class="tool-input">
+            </div>
+            <div class="form-control">
+                <label for="needType">Type:</label>
+                <select id="needType" class="tool-input">
+                    <option value="piece">Piece</option>
+                    <option value="kg">KG</option>
+                    <option value="ltr">Liter</option>
+                    <option value="dozen">Dozen</option>
+                    <option value="pack">Pack</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-control">
+            <label for="needQuantity">Quantity:</label>
+            <input type="number" id="needQuantity" placeholder="Optional" class="tool-input">
+        </div>
+
+        <button id="addNeedBtn" class="tool-button">Add Item</button>
+
+        <div class="text-output mt-4 flex-grow" id="needsList">
+            <!-- Needs will be listed here -->
+            <p class="text-gray-500">No items added yet.</p>
+        </div>
+
+        <div class="export-buttons-group">
+            <button id="exportNeedsTxt" class="btn-secondary">Export to CSV</button>
+            <button id="exportNeedsPdf" class="btn-secondary">Export to PDF</button>
+        </div>
+
+        <div class="flex justify-center mt-8">
+            <button id="backToDashboardBtn" class="btn-secondary responsive-btn">Back to Dashboard</button>
+        </div>
+    </div>
+
+    <!-- Main JavaScript file -->
+    <script src="main.js"></script>
+</body>
+</html>

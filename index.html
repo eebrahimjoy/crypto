@@ -3,153 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web NFC Writer</title>
+    <title>Dashboard</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        /* Custom styles for better aesthetics */
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f0f4f8; /* Light background */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 1rem;
-        }
-        .container {
-            background-color: #ffffff;
-            border-radius: 1.5rem; /* More rounded corners */
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Softer shadow */
-            max-width: 500px;
-            width: 100%;
-            padding: 2rem;
-            text-align: center;
-        }
-        .btn-primary {
-            background-image: linear-gradient(to right, #6366f1, #8b5cf6); /* Gradient background */
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.75rem; /* Rounded button */
-            font-weight: 600;
-            transition: all 0.2s ease-in-out;
-            box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
-        }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(99, 102, 241, 0.4);
-        }
-        .message-box {
-            background-color: #e2e8f0;
-            color: #2d3748;
-            padding: 1rem;
-            border-radius: 0.75rem;
-            margin-top: 1.5rem;
-            font-size: 0.9rem;
-            text-align: left;
-            word-wrap: break-word; /* Ensure long messages wrap */
-        }
-        .message-box.success {
-            background-color: #d1fae5;
-            color: #065f46;
-        }
-        .message-box.error {
-            background-color: #fee2e2;
-            color: #991b1b;
-        }
-        input[type="text"], textarea {
-            width: 100%;
-            padding: 0.75rem;
-            margin-bottom: 1rem;
-            border: 1px solid #cbd5e0;
-            border-radius: 0.5rem;
-            box-sizing: border-box; /* Include padding in width */
-        }
-    </style>
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="style.css">
+    <script>
+        // Add a specific class to the body for dashboard page styling adjustments
+        // This is necessary for style.css to apply the correct flex properties to the body
+        document.body.classList.add('dashboard-page');
+    </script>
 </head>
-<body class="font-sans antialiased">
-    <div class="container">
-        <h1 class="text-3xl font-bold mb-4 text-gray-800">Web NFC Data Writer</h1>
-        <p class="text-gray-600 mb-6">
-            Enter the text you want to write to an NFC tag.
-            <br>
-            <span class="font-semibold text-red-500">
-                Note: This requires a browser that supports Web NFC (e.g., Chrome on Android) and user permission.
-                It cannot directly open phone settings.
-            </span>
-        </p>
+<body >
 
-        <div class="mb-4">
-            <label for="nfcData" class="block text-gray-700 text-sm font-bold mb-2">
-                Data to Write:
-            </label>
-            <textarea id="nfcData" rows="3" placeholder="Enter text to write to NFC tag..."
-                      class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"></textarea>
+    <div id="toastContainer"></div>
+
+    <header class="dashboard-header">
+        <div class="dashboard-header-content">
+            <!-- Left: Dashboard Title -->
+            <div class="flex-grow flex items-center">
+                <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-gray-900 hidden sm:block">Dashboard</h1>
+            </div>
+
+            <!-- Center: Main Navigation Links -->
+            <nav class="dashboard-nav">
+                <a href="index.html" id="dashboardNavLink" class="active">Dashboard</a>
+                <a href="home.html" id="encryptionNavLink">Encryption</a>
+                <a href="science.html" id="scienceNavLink">Science</a>
+            </nav>
+
+            <!-- Right: Login Button -->
+            <div class="flex-grow flex justify-end items-center">
+                <button id="loginNavigateButton" class="btn-primary responsive-btn">Login</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="w-full max-w-6xl mx-auto p-4 sm:p-6 lg:p-8 flex-grow"> <!-- Added flex-grow here -->
+
+        <!-- Quick Access Tools -->
+        <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Quick Access Tools</h2>
+        <div class="dashboard-grid mb-10">
+            <div id="percentageCalculatorNavBtn" class="card nav-card">
+                <i class="fas fa-percent icon"></i>
+                <h3>Percentage Calculator</h3>
+            </div>
+            <div id="weatherTimeNavBtn" class="card nav-card">
+                <i class="fas fa-cloud-sun icon"></i>
+                <h3>Weather & Time</h3>
+            </div>
+            <div id="dailyExpensesNavBtn" class="card nav-card">
+                <i class="fas fa-money-bill-wave icon"></i>
+                <h3>Daily Expenses</h3>
+            </div>
+            <div id="dailyNeedsNavBtn" class="card nav-card">
+                <i class="fas fa-shopping-basket icon"></i>
+                <h3>Daily Needs List</h3>
+            </div>
+            <div id="cricketNavBtn" class="card nav-card">
+                <i class="fas fa-cricket-ball icon"></i>
+                <h3>Cricket Matches</h3>
+            </div>
+            <div id="footballNavBtn" class="card nav-card">
+                <i class="fas fa-futbol icon"></i>
+                <h3>Football Leagues</h3>
+            </div>
         </div>
 
-        <button id="writeNFCButton" class="btn-primary">
-            Write to NFC Tag
-        </button>
+        <!-- News Section -->
+        <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Recent News</h2>
+        <div class="dashboard-grid">
+            <!-- Bangladesh News (Prothom Alo - Placeholder) -->
+            <div class="card news-card">
+                <h3><i class="fas fa-flag text-green-600 mr-2"></i>Bangladesh News</h3>
+                <div class="news-list">
+                    <div class="news-item">
+                        <h4>Bangladesh achieves new economic milestone</h4>
+                        <p>Analyst predict sustained growth despite global challenges.</p>
+                        <a href="#" target="_blank">Read more on Prothom Alo</a>
+                    </div>
+                    <div class="news-item">
+                        <h4>Digital transformation in rural areas</h4>
+                        <p>Government initiatives bring internet access to remote villages.</p>
+                        <a href="#" target="_blank">Read more on Prothom Alo</a>
+                    </div>
+                    <div class="news-item">
+                        <h4>Cultural festival draws large crowds</h4>
+                        <p>Annual event celebrates rich heritage and traditions.</p>
+                        <a href="#" target="_blank">Read more on Prothom Alo</a>
+                    </div>
+                </div>
+            </div>
 
-        <div id="messageBox" class="message-box hidden"></div>
+            <!-- GCA News (Khaleej Times - Placeholder) -->
+            <div class="card news-card">
+                <h3><i class="fas fa-building text-yellow-600 mr-2"></i>GCA News</h3>
+                <div class="news-list">
+                    <div class="news-item">
+                        <h4>Dubai launches new smart city initiatives</h4>
+                        <p>Focus on AI and sustainable development for future growth.</p>
+                        <a href="#" target="_blank">Read more on Khaleej Times</a>
+                    </div>
+                    <div class="news-item">
+                        <h4>Record tourism numbers in Abu Dhabi</h4>
+                        <p>Cultural attractions and events drive visitor increase.</p>
+                        <a href="#" target="_blank">Read more on Khaleej Times</a>
+                    </div>
+                    <div class="news-item">
+                        <h4>Innovation hub opens in Riyadh</h4>
+                        <p>Supporting startups and technological advancements in the region.</p>
+                        <a href="#" target="_blank">Read more on Khaleej Times</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- USA News (NY Times - Placeholder) -->
+            <div class="card news-card">
+                <h3><i class="fas fa-star text-blue-600 mr-2"></i>USA News</h3>
+                <div class="news-list">
+                    <div class="news-item">
+                        <h4>Technology giants announce new breakthroughs</h4>
+                        <p>Advancements in quantum computing expected to revolutionize industry.</p>
+                        <a href="#" target="_blank">Read more on NY Times</a>
+                    </div>
+                    <div class="news-item">
+                        <h4>Debate on climate policy intensifies</h4>
+                        <p>New legislative proposals face scrutiny in Congress.</p>
+                        <a href="#" target="_blank">Read more on NY Times</a>
+                    </div>
+                    <div class="news-item">
+                        <h4>Economic recovery shows strong signs</h4>
+                        <p>Job growth and consumer spending drive positive outlook.</p>
+                        <a href="#" target="_blank">Read more on NY Times</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <script>
-        // Function to display messages to the user
-        function showMessage(message, type = 'info') {
-            const messageBox = document.getElementById('messageBox');
-            messageBox.textContent = message;
-            messageBox.className = `message-box ${type}`; // Apply type-specific styling
-            messageBox.classList.remove('hidden'); // Make sure it's visible
-            console.log(`Message (${type}): ${message}`); // Log for debugging
-        }
+    <footer class="app-footer">
+        <p>&copy; 2024 Eebrahimjoy. All rights reserved.</p>
+        <p>Dashboard and Tools. Designed with <i class="fas fa-heart text-red-500"></i> by your AI assistant.</p>
+    </footer>
 
-        // Function to hide the message box
-        function hideMessage() {
-            const messageBox = document.getElementById('messageBox');
-            messageBox.classList.add('hidden');
-        }
-
-        // Event listener for the button click
-        document.getElementById('writeNFCButton').addEventListener('click', async () => {
-            hideMessage(); // Clear previous messages
-            const nfcData = document.getElementById('nfcData').value;
-
-            // Check if Web NFC API is supported
-            if ('NDEFReader' in window) {
-                try {
-                    showMessage('Preparing to write to NFC tag. Tap a tag now...', 'info');
-
-                    // Create a new NDEFReader instance
-                    const ndef = new NDEFReader();
-
-                    // Connect to the NFC device and initiate a write operation
-                    await ndef.write({
-                        records: [{ recordType: "text", text: nfcData }]
-                    });
-
-                    showMessage('Successfully wrote data to NFC tag!', 'success');
-                } catch (error) {
-                    if (error.name === 'NotAllowedError') {
-                        showMessage('NFC write permission denied by user or browser. Make sure you grant permission and tap the tag promptly.', 'error');
-                    } else if (error.name === 'AbortError') {
-                        showMessage('NFC write operation aborted (e.g., user moved tag away or cancelled).', 'error');
-                    } else if (error.name === 'NetworkError') {
-                        showMessage('NFC hardware not available or turned off. Please ensure NFC is enabled on your device.', 'error');
-                    } else {
-                        showMessage(`Error writing to NFC tag: ${error.message}`, 'error');
-                    }
-                    console.error('NFC Write Error:', error);
-                }
-            } else {
-                showMessage('Web NFC is not supported in this browser or device. Please try a compatible browser (e.g., Chrome on Android).', 'error');
-            }
-        });
-
-        // Initialize textarea with a default value for convenience
-        window.addEventListener('load', () => {
-            document.getElementById('nfcData').value = 'Hello from Web NFC!';
-        });
-    </script>
+    <!-- Main JavaScript file -->
+    <script src="main.js"></script>
 </body>
 </html>

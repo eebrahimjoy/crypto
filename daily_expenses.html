@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Expenses</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- jsPDF for PDF export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- jsPDF Autotable Plugin -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.autotable.min.js"></script>
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="centered-body">
+
+    <div id="toastContainer"></div>
+
+    <div class="tool-page-container">
+        <h2 class="tool-section-title">Daily Expenses</h2>
+        <p class="text-center text-gray-600 mb-6">Track your daily expenditures.</p>
+
+        <div class="form-control">
+            <label for="expenseAmount">Amount:</label>
+            <input type="number" id="expenseAmount" placeholder="e.g., 50.75" class="tool-input">
+        </div>
+        <div class="form-control">
+            <label for="expenseDescription">Description:</label>
+            <input type="text" id="expenseDescription" placeholder="e.g., Coffee, groceries" class="tool-input">
+        </div>
+        <button id="addExpenseBtn" class="tool-button">Add Expense</button>
+
+        <div class="text-output mt-4 flex-grow" id="expenseList">
+            <!-- Expenses will be listed here -->
+            <p class="text-gray-500">No expenses added yet.</p>
+        </div>
+
+        <div class="export-buttons-group">
+            <button id="exportExpensesTxt" class="btn-secondary">Export to CSV</button>
+            <button id="exportExpensesPdf" class="btn-secondary">Export to PDF</button>
+        </div>
+
+        <div class="flex justify-center mt-8">
+            <button id="backToDashboardBtn" class="btn-secondary responsive-btn">Back to Dashboard</button>
+        </div>
+    </div>
+
+    <!-- Main JavaScript file -->
+    <script src="main.js"></script>
+</body>
+</html>

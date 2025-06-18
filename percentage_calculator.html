@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Percentage Calculator</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="centered-body">
+
+    <div id="toastContainer"></div>
+
+    <div class="tool-page-container">
+        <h2 class="tool-section-title">Percentage Calculator</h2>
+        <p class="text-center text-gray-600 mb-6">Calculate percentages easily.</p>
+
+        <div class="form-control">
+            <label for="percentValue">Percentage:</label>
+            <input type="number" id="percentValue" placeholder="e.g., 10" class="tool-input">
+        </div>
+        <div class="form-control">
+            <label for="totalValue">Total Value:</label>
+            <input type="number" id="totalValue" placeholder="e.g., 200" class="tool-input">
+        </div>
+        <button id="calculatePercentageBtn" class="tool-button">Calculate</button>
+        <div class="text-output mt-4" id="percentageResult"></div>
+
+        <div class="flex justify-center mt-8">
+            <button id="backToDashboardBtn" class="btn-secondary responsive-btn">Back to Dashboard</button>
+        </div>
+    </div>
+
+    <!-- Main JavaScript file -->
+    <script src="main.js"></script>
+</body>
+</html>

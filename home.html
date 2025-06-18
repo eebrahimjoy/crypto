@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encryption & Decryption Tool</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for eye icon (though not used on this page, good to include for consistency if a general shared style) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="centered-body">
+
+    <div id="toastContainer"></div>
+
+    <!-- Crypto Box -->
+    <div class="tool-page-container" id="cryptoBox">
+        <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">Encryption & Decryption</h2>
+        <p class="text-center text-gray-600 mb-6">Enter text to encrypt or decrypt using our custom cipher.</p>
+
+        <div class="form-control">
+            <label for="inputText">Input Text</label>
+            <textarea id="inputText" placeholder="Enter text here..."></textarea>
+        </div>
+
+        <div class="flex flex-col sm:flex-row sm:justify-center gap-4 mb-6">
+            <button id="encryptButton" class="btn-primary responsive-btn sm:flex-1">Encrypt</button>
+            <button id="decryptButton" class="btn-secondary responsive-btn sm:flex-1">Decrypt</button>
+        </div>
+
+        <div class="form-control">
+            <label for="resultText">Result</label>
+            <textarea id="resultText" readonly placeholder="Result will appear here..."></textarea>
+        </div>
+
+        <div class="flex justify-center"> <!-- Center the button on desktop -->
+            <button id="logoutButton" class="btn-secondary responsive-btn w-full sm:w-auto">Logout</button>
+        </div>
+    </div>
+
+    <!-- Main JavaScript file -->
+    <script src="main.js"></script>
+</body>
+</html>
