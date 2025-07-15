@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Footer Remover</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Light gray background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        /* Custom styles for better aesthetics */
+        .card {
+            background-color: #ffffff;
+            border-radius: 1.5rem; /* More rounded corners */
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); /* Stronger shadow */
+            padding: 2.5rem; /* More padding */
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+            border: 1px solid #e5e7eb; /* Light border */
+        }
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+        }
+        .file-input-label {
+            background-color: #4f46e5; /* Indigo color */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem; /* Rounded corners */
+            cursor: pointer;
+            display: inline-block;
+            transition: background-color 0.2s ease-in-out;
+            border: 1px solid #4f46e5;
+            width: 100%;
+            text-align: center;
+        }
+        .file-input-label:hover {
+            background-color: #4338ca; /* Darker indigo on hover */
+        }
+        .btn-process {
+            background-color: #10b981; /* Emerald color */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+            border: 1px solid #10b981;
+            width: 100%;
+        }
+        .btn-process:hover {
+            background-color: #059669; /* Darker emerald on hover */
+        }
+        .btn-download {
+            background-color: #3b82f6; /* Blue color */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+            border: 1px solid #3b82f6;
+            width: 100%;
+            display: none; /* Hidden by default */
+        }
+        .btn-download:hover {
+            background-color: #2563eb; /* Darker blue on hover */
+        }
+        .message-box {
+            padding: 1rem;
+            border-radius: 0.75rem;
+            margin-top: 1.5rem;
+            font-weight: 500;
+            text-align: left;
+        }
+        .message-box.info {
+            background-color: #e0f2fe; /* Light blue */
+            color: #0284c7; /* Darker blue */
+            border: 1px solid #7dd3fc;
+        }
+        .message-box.success {
+            background-color: #d1fae5; /* Light green */
+            color: #065f46; /* Darker green */
+            border: 1px solid #6ee7b7;
+        }
+        .message-box.error {
+            background-color: #fee2e2; /* Light red */
+            color: #b91c1c; /* Darker red */
+            border: 1px solid #fca5a5;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6">PDF Footer Remover</h1>
+        <p class="text-gray-600 mb-8">Upload a PDF file, and this tool will "remove" the footer by cropping the bottom portion of each page. Please note this is a visual crop, not a true content deletion.</p>
+
+        <div class="mb-6">
+            <div class="file-input-wrapper">
+                <input type="file" id="pdfFile" accept=".pdf">
+                <label for="pdfFile" class="file-input-label">
+                    <span id="fileName">Select PDF File</span>
+                </label>
+            </div>
+        </div>
+
+        <div class="mb-6">
+            <label for="footerHeight" class="block text-left text-gray-700 text-sm font-medium mb-2">
+                Footer Height to Crop (points):
+            </label>
+            <input type="number" id="footerHeight" value="50" min="0" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out">
+            <p class="text-xs text-gray-500 mt-1 text-left">A typical footer might be 30-70 points high. 72 points = 1 inch.</p>
+        </div>
+
+        <button id="processPdfBtn" class="btn-process mb-4">Process PDF</button>
+
+        <a id="downloadLink" class="btn-download" download="processed_pdf.pdf">Download Processed PDF</a>
+
+        <div id="messageBox" class="message-box info hidden"></div>
+    </div>
+
+    <!-- PDF-LIB CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.min.js"></script>
+    <script>
+        // Ensure the PDF-LIB library is loaded before using it
+        const { PDFDocument, rgb } = PDFLib;
+
+        // Get DOM elements
+        const pdfFileInput = document.getElementById('pdfFile');
+        const fileNameSpan = document.getElementById('fileName');
+        const footerHeightInput = document.getElementById('footerHeight');
+        const processPdfBtn = document.getElementById('processPdfBtn');
+        const downloadLink = document.getElementById('downloadLink');
+        const messageBox = document.getElementById('messageBox');
+
+        let selectedFile = null;
+
+        // Function to display messages
+        function showMessage(message, type) {
+            messageBox.textContent = message;
+            messageBox.className = `message-box ${type}`;
+            messageBox.classList.remove('hidden');
+        }
+
+        // Event listener for file input change
+        pdfFileInput.addEventListener('change', (event) => {
+            selectedFile = event.target.files[0];
+            if (selectedFile) {
+                fileNameSpan.textContent = selectedFile.name;
+                downloadLink.style.display = 'none'; // Hide download link if new file selected
+                messageBox.classList.add('hidden'); // Hide previous messages
+            } else {
+                fileNameSpan.textContent = 'Select PDF File';
+            }
+        });
+
+        // Event listener for process button click
+        processPdfBtn.addEventListener('click', async () => {
+            if (!selectedFile) {
+                showMessage('Please select a PDF file first.', 'error');
+                return;
+            }
+
+            showMessage('Processing PDF... Please wait.', 'info');
+            downloadLink.style.display = 'none'; // Hide download link during processing
+
+            try {
+                // Read the PDF file as an ArrayBuffer
+                const arrayBuffer = await selectedFile.arrayBuffer();
+                const pdfDoc = await PDFDocument.load(arrayBuffer);
+
+                const footerHeight = parseFloat(footerHeightInput.value);
+                if (isNaN(footerHeight) || footerHeight < 0) {
+                    showMessage('Please enter a valid positive number for footer height.', 'error');
+                    return;
+                }
+
+                const pages = pdfDoc.getPages();
+
+                for (const page of pages) {
+                    const { width, height } = page.getSize();
+
+                    // Get the current crop box. If not set, it defaults to the media box.
+                    // We need to ensure we're modifying the crop box relative to the page's origin (0,0 is bottom-left).
+                    // The crop box is defined by [x, y, width, height] of the visible area.
+                    // To crop the bottom, we need to increase the 'y' (bottom-left y-coordinate) and decrease the 'height'.
+                    // The cropBox is usually (0, 0, width, height) by default.
+                    // So, new y = footerHeight, new height = original height - footerHeight.
+
+                    // Get the current media box (the actual physical dimensions of the page)
+                    const mediaBox = page.getMediaBox();
+                    const currentCropBox = page.getCropBox();
+
+                    // Calculate new crop box dimensions
+                    const newCropX = currentCropBox.x;
+                    const newCropY = currentCropBox.y + footerHeight; // Shift bottom boundary up
+                    const newCropWidth = currentCropBox.width;
+                    const newCropHeight = currentCropBox.height - footerHeight; // Reduce height
+
+                    // Ensure the new height is not negative
+                    if (newCropHeight < 0) {
+                        showMessage(`Footer height (${footerHeight} points) is too large for page of height ${height} points. Please reduce it.`, 'error');
+                        return;
+                    }
+
+                    // Set the new crop box
+                    page.setCropBox(newCropX, newCropY, newCropWidth, newCropHeight);
+                }
+
+                // Save the modified PDF
+                const modifiedPdfBytes = await pdfDoc.save();
+
+                // Create a Blob from the modified PDF bytes
+                const blob = new Blob([modifiedPdfBytes], { type: 'application/pdf' });
+
+                // Create a URL for the Blob
+                const url = URL.createObjectURL(blob);
+
+                // Update the download link
+                downloadLink.href = url;
+                downloadLink.style.display = 'block'; // Show the download link
+                downloadLink.download = `processed_${selectedFile.name}`; // Suggest a filename
+
+                showMessage('PDF processed successfully! You can now download it.', 'success');
+
+            } catch (error) {
+                console.error('Error processing PDF:', error);
+                showMessage(`Error processing PDF: ${error.message}. Please try again.`, 'error');
+                downloadLink.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -216,8 +216,8 @@ const Utils = (() => {
 // --- Module 3: App State and Core Logic (conceptual app.js) ---
 const App = (() => {
     // Valid credentials (Base64 obfuscated for client-side demo)
-    const VALID_USER = btoa('ehaan');
-    const VALID_PASS = btoa('200923');
+    const VALID_USER = btoa('secret@ehaan.com');
+    const VALID_PASS = btoa('200923@En');
 
     // Element references (will be initialized based on the current page)
     let elements = {};
@@ -290,7 +290,7 @@ const App = (() => {
                 weatherTimeNavBtn: document.getElementById('weatherTimeNavBtn'),
                 dailyExpensesNavBtn: document.getElementById('dailyExpensesNavBtn'),
                 dailyNeedsNavBtn: document.getElementById('dailyNeedsNavBtn'),
-                cricketNavBtn: document.getElementById('cricketNavBtn'),
+                pdfNavBtn: document.getElementById('pdfNavBtn'),
                 footballNavBtn: document.getElementById('footballNavBtn')
             };
         } else if (currentPage === 'percentage_calculator.html') {
@@ -672,7 +672,7 @@ const App = (() => {
 
         const reportTitle = "Daily Needs List";
         const dateGenerated = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-        const generatedBy = "Eebrahimjoy";
+        const generatedBy = "eebrahimjoy";
         const approxTotalCost = dailyNeeds.reduce((sum, item) => sum + ((item.approxPrice || 0) * (item.quantity || 1)), 0).toFixed(2);
         const footerText = `Approx. Total Cost: $${approxTotalCost}`;
 
@@ -859,7 +859,7 @@ const App = (() => {
             if (elements.weatherTimeNavBtn) elements.weatherTimeNavBtn.addEventListener('click', () => navigateTo('weather_time.html'));
             if (elements.dailyExpensesNavBtn) elements.dailyExpensesNavBtn.addEventListener('click', () => navigateTo('daily_expenses.html'));
             if (elements.dailyNeedsNavBtn) elements.dailyNeedsNavBtn.addEventListener('click', () => navigateTo('daily_needs.html'));
-            if (elements.cricketNavBtn) elements.cricketNavBtn.addEventListener('click', () => navigateTo('cricket.html'));
+            if (elements.pdfNavBtn) elements.pdfNavBtn.addEventListener('click', () => navigateTo('pdf_helper.html'));
             if (elements.footballNavBtn) elements.footballNavBtn.addEventListener('click', () => navigateTo('football.html'));
 
         } else if (currentPage === 'percentage_calculator.html') {
