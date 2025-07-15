@@ -290,7 +290,7 @@ const App = (() => {
                 weatherTimeNavBtn: document.getElementById('weatherTimeNavBtn'),
                 dailyExpensesNavBtn: document.getElementById('dailyExpensesNavBtn'),
                 dailyNeedsNavBtn: document.getElementById('dailyNeedsNavBtn'),
-                cricketNavBtn: document.getElementById('cricketNavBtn'),
+                pdfNavBtn: document.getElementById('pdfNavBtn'),
                 footballNavBtn: document.getElementById('footballNavBtn')
             };
         } else if (currentPage === 'percentage_calculator.html') {
@@ -859,7 +859,7 @@ const App = (() => {
             if (elements.weatherTimeNavBtn) elements.weatherTimeNavBtn.addEventListener('click', () => navigateTo('weather_time.html'));
             if (elements.dailyExpensesNavBtn) elements.dailyExpensesNavBtn.addEventListener('click', () => navigateTo('daily_expenses.html'));
             if (elements.dailyNeedsNavBtn) elements.dailyNeedsNavBtn.addEventListener('click', () => navigateTo('daily_needs.html'));
-            if (elements.cricketNavBtn) elements.cricketNavBtn.addEventListener('click', () => navigateTo('cricket.html'));
+            if (elements.pdfNavBtn) elements.pdfNavBtn.addEventListener('click', () => navigateTo('pdf_helper.html'));
             if (elements.footballNavBtn) elements.footballNavBtn.addEventListener('click', () => navigateTo('football.html'));
 
         } else if (currentPage === 'percentage_calculator.html') {
