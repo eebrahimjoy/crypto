@@ -289,7 +289,8 @@ const App = (() => {
                 percentageCalculatorNavBtn: document.getElementById('percentageCalculatorNavBtn'),
                 weatherTimeNavBtn: document.getElementById('weatherTimeNavBtn'),
                 dailyExpensesNavBtn: document.getElementById('dailyExpensesNavBtn'),
-                dailyNeedsNavBtn: document.getElementById('dailyNeedsNavBtn'),
+                imageBgRemoverNavBtn: document.getElementById('imageBgRemoverNavBtn'),
+                imageResizerNavBtn: document.getElementById('imageResizerNavBtn'),
                 pdfNavBtn: document.getElementById('pdfNavBtn'),
                 pdfToImageNavBtn: document.getElementById('pdfToImageNavBtn')
             };
@@ -641,8 +642,8 @@ const App = (() => {
             return;
         }
         if (elements.needApproxPrice.value.trim() !== '' && isNaN(approxPrice)) { // If price was entered, validate it
-             Utils.showToast('Please enter a valid approximate price (number).', 'error');
-             return;
+            Utils.showToast('Please enter a valid approximate price (number).', 'error');
+            return;
         }
         if (elements.needQuantity.value.trim() !== '' && isNaN(quantity)) { // If quantity was entered, validate it
             Utils.showToast('Please enter a valid quantity (number).', 'error');
@@ -858,7 +859,8 @@ const App = (() => {
             if (elements.percentageCalculatorNavBtn) elements.percentageCalculatorNavBtn.addEventListener('click', () => navigateTo('percentage_calculator.html'));
             if (elements.weatherTimeNavBtn) elements.weatherTimeNavBtn.addEventListener('click', () => navigateTo('weather_time.html'));
             if (elements.dailyExpensesNavBtn) elements.dailyExpensesNavBtn.addEventListener('click', () => navigateTo('daily_expenses.html'));
-            if (elements.dailyNeedsNavBtn) elements.dailyNeedsNavBtn.addEventListener('click', () => navigateTo('daily_needs.html'));
+            if (elements.imageBgRemoverNavBtn) elements.imageBgRemoverNavBtn.addEventListener('click', () => navigateTo('image_bg_remover.html'));
+            if (elements.imageResizerNavBtn) elements.imageResizerNavBtn.addEventListener('click', () => navigateTo('image_resizer.html'));
             if (elements.pdfNavBtn) elements.pdfNavBtn.addEventListener('click', () => navigateTo('pdf_helper.html'));
             if (elements.pdfToImageNavBtn) elements.pdfToImageNavBtn.addEventListener('click', () => navigateTo('pdf_to_images.html'));
 

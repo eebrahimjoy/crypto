@@ -7,150 +7,263 @@
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Inter Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Custom Styles -->
-    <link rel="stylesheet" href="style.css">
-    <script>
-        // Add a specific class to the body for dashboard page styling adjustments
-        // This is necessary for style.css to apply the correct flex properties to the body
-        document.body.classList.add('dashboard-page');
-    </script>
-</head>
-<body >
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(to bottom right, #f3f4f6, #e0e7ff); /* Soft gradient background */
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    <div id="toastContainer"></div>
+        /* Header Styling */
+        .dashboard-header {
+            background-color: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            padding: 1rem 1.5rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .dashboard-header-content {
+            max-width: 1280px; /* Equivalent to max-w-7xl */
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem; /* Space between elements */
+        }
+
+        .dashboard-nav a {
+            color: #6b7280; /* Gray-500 */
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.75rem; /* Rounded corners */
+            transition: all 0.2s ease-in-out;
+            font-weight: 500;
+            text-decoration: none;
+            margin: 0 0.5rem; /* Space between nav links */
+            display: inline-block;
+        }
+
+        .dashboard-nav a:hover {
+            background-color: #eef2ff; /* Indigo-50 */
+            color: #4f46e5; /* Indigo-600 */
+        }
+
+        .dashboard-nav a.active {
+            background-color: #4f46e5; /* Indigo-600 */
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 4px 8px rgba(79, 70, 229, 0.3);
+        }
+
+        .btn-primary {
+            background-color: #4f46e5; /* Indigo-600 */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px; /* Full rounded */
+            font-weight: 600;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 8px rgba(79, 70, 229, 0.3);
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            background-color: #4338ca; /* Indigo-700 */
+            box-shadow: 0 6px 12px rgba(67, 56, 202, 0.4);
+        }
+
+        /* Main Content Area */
+        .main-content-area {
+            flex-grow: 1; /* Allows content to expand and push footer down */
+            padding-top: 6rem; /* Space for fixed header */
+            padding-bottom: 3rem; /* Space for footer */
+        }
+
+        /* Quick Access Tools Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsive grid */
+            gap: 2rem; /* Space between cards */
+            padding: 0 1rem; /* Padding for smaller screens */
+        }
+
+        .card.nav-card {
+            background-color: #ffffff;
+            border-radius: 1.5rem; /* More rounded */
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            border: 1px solid #e5e7eb;
+        }
+
+        .card.nav-card:hover {
+            transform: translateY(-8px) scale(1.02); /* Lift and slightly enlarge on hover */
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            border-color: #6366f1; /* Indigo-500 */
+        }
+
+        .card.nav-card .icon {
+            font-size: 3.5rem; /* Larger icons */
+            color: #6366f1; /* Indigo-500 */
+            margin-bottom: 1.25rem;
+            transition: color 0.3s ease-in-out;
+        }
+
+        .card.nav-card:hover .icon {
+            color: #4f46e5; /* Darker indigo on hover */
+        }
+
+        .card.nav-card h3 {
+            font-size: 1.5rem; /* Larger heading */
+            font-weight: 700;
+            color: #374151; /* Gray-700 */
+        }
+
+        /* Footer Styling */
+        .app-footer {
+            background-color: #1f2937; /* Darker gray */
+            color: #d1d5db; /* Light gray */
+            padding: 1.5rem 1rem;
+            text-align: center;
+            font-size: 0.875rem; /* Smaller text */
+            border-top: 1px solid #374151;
+        }
+
+        .app-footer p {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 640px) {
+            .dashboard-header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.5rem;
+            }
+            .dashboard-header .flex-grow {
+                flex-grow: 0;
+            }
+            .dashboard-nav {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                margin-top: 0.5rem;
+            }
+            .dashboard-nav a {
+                margin: 0.25rem;
+                padding: 0.5rem 0.75rem;
+                font-size: 0.875rem;
+            }
+            .dashboard-header h1 {
+                font-size: 1.75rem;
+            }
+            .btn-primary {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.875rem;
+            }
+            .main-content-area {
+                padding-top: 9rem; /* Adjust for stacked header */
+            }
+            .card.nav-card {
+                padding: 1.5rem;
+            }
+            .card.nav-card .icon {
+                font-size: 3rem;
+            }
+            .card.nav-card h3 {
+                font-size: 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
 
     <header class="dashboard-header">
         <div class="dashboard-header-content">
             <!-- Left: Dashboard Title -->
             <div class="flex-grow flex items-center">
-                <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-gray-900 hidden sm:block">Dashboard</h1>
+                <h1 class="text-indigo-700 font-extrabold text-3xl sm:text-4xl">Dashboard</h1>
             </div>
 
             <!-- Center: Main Navigation Links -->
             <nav class="dashboard-nav">
-                <a href="index.html" id="dashboardNavLink" class="active">Dashboard</a>
-                <a href="home.html" id="encryptionNavLink">Encryption</a>
-                <a href="science.html" id="scienceNavLink">Science</a>
+                <a href="#" id="dashboardNavLink" class="active">Dashboard</a>
+                <a href="#" id="encryptionNavLink">Encryption</a>
+                <a href="#" id="scienceNavLink">Science</a>
             </nav>
 
             <!-- Right: Login Button -->
             <div class="flex-grow flex justify-end items-center">
-                <button id="loginNavigateButton" class="btn-primary responsive-btn">Login</button>
+                <button id="loginNavigateButton" class="btn-primary">Login</button>
             </div>
         </div>
     </header>
 
-    <div class="w-full max-w-6xl mx-auto p-4 sm:p-6 lg:p-8 flex-grow"> <!-- Added flex-grow here -->
-
+    <div class="main-content-area w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Quick Access Tools -->
-        <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Quick Access Tools</h2>
+        <h2 class="text-center text-4xl font-extrabold text-gray-800 mb-12">Quick Access Tools</h2>
         <div class="dashboard-grid mb-10">
+             <div id="imageBgRemoverNavBtn" class="card nav-card">
+                <i class="fas fa-image icon"></i>
+                <h3>Background Remover</h3>
+            </div>
+            <div id="pdfNavBtn" class="card nav-card">
+               <i class="fas fa-file-pdf icon"></i>
+                <h3>PDF Footer Remover</h3>
+            </div>
+            <div id="pdfToImageNavBtn" class="card nav-card">
+                <i class="fas fa-shuffle icon"></i>
+                <h3>PDF to Images Conversion</h3>
+            </div>
+            <div id="imageResizerNavBtn" class="card nav-card">
+                <i class="fas fa-image icon"></i>
+                <h3>Image Resizer Photo Editor</h3>
+            </div>
             <div id="percentageCalculatorNavBtn" class="card nav-card">
                 <i class="fas fa-percent icon"></i>
                 <h3>Percentage Calculator</h3>
             </div>
             <div id="weatherTimeNavBtn" class="card nav-card">
                 <i class="fas fa-cloud-sun icon"></i>
-                <h3>Weather & Time</h3>
+                <h3>Weather & Time Update</h3>
             </div>
             <div id="dailyExpensesNavBtn" class="card nav-card">
                 <i class="fas fa-money-bill-wave icon"></i>
-                <h3>Daily Expenses</h3>
+                <h3>Daily Expenses Maker</h3>
             </div>
-            <div id="dailyNeedsNavBtn" class="card nav-card">
-                <i class="fas fa-shopping-basket icon"></i>
-                <h3>Daily Needs List</h3>
-            </div>
-            <div id="pdfNavBtn" class="card nav-card">
-               <i class="fas fa-file-pdf icon"></i>
-                <h3>PDF Helper</h3>
-            </div>
-            <div id="pdfToImageNavBtn" class="card nav-card">
-                <i class="fas fa-shuffle icon"></i>
-                <h3>PDF to Images</h3>
-            </div>
-        </div>
-
-        <!-- News Section -->
-        <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Recent News</h2>
-        <div class="dashboard-grid">
-            <!-- Bangladesh News (Prothom Alo - Placeholder) -->
-            <div class="card news-card">
-                <h3><i class="fas fa-flag text-green-600 mr-2"></i>Bangladesh News</h3>
-                <div class="news-list">
-                    <div class="news-item">
-                        <h4>Bangladesh achieves new economic milestone</h4>
-                        <p>Analyst predict sustained growth despite global challenges.</p>
-                        <a href="#" target="_blank">Read more on Prothom Alo</a>
-                    </div>
-                    <div class="news-item">
-                        <h4>Digital transformation in rural areas</h4>
-                        <p>Government initiatives bring internet access to remote villages.</p>
-                        <a href="#" target="_blank">Read more on Prothom Alo</a>
-                    </div>
-                    <div class="news-item">
-                        <h4>Cultural festival draws large crowds</h4>
-                        <p>Annual event celebrates rich heritage and traditions.</p>
-                        <a href="#" target="_blank">Read more on Prothom Alo</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- GCA News (Khaleej Times - Placeholder) -->
-            <div class="card news-card">
-                <h3><i class="fas fa-building text-yellow-600 mr-2"></i>GCA News</h3>
-                <div class="news-list">
-                    <div class="news-item">
-                        <h4>Dubai launches new smart city initiatives</h4>
-                        <p>Focus on AI and sustainable development for future growth.</p>
-                        <a href="#" target="_blank">Read more on Khaleej Times</a>
-                    </div>
-                    <div class="news-item">
-                        <h4>Record tourism numbers in Abu Dhabi</h4>
-                        <p>Cultural attractions and events drive visitor increase.</p>
-                        <a href="#" target="_blank">Read more on Khaleej Times</a>
-                    </div>
-                    <div class="news-item">
-                        <h4>Innovation hub opens in Riyadh</h4>
-                        <p>Supporting startups and technological advancements in the region.</p>
-                        <a href="#" target="_blank">Read more on Khaleej Times</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- USA News (NY Times - Placeholder) -->
-            <div class="card news-card">
-                <h3><i class="fas fa-star text-blue-600 mr-2"></i>USA News</h3>
-                <div class="news-list">
-                    <div class="news-item">
-                        <h4>Technology giants announce new breakthroughs</h4>
-                        <p>Advancements in quantum computing expected to revolutionize industry.</p>
-                        <a href="#" target="_blank">Read more on NY Times</a>
-                    </div>
-                    <div class="news-item">
-                        <h4>Debate on climate policy intensifies</h4>
-                        <p>New legislative proposals face scrutiny in Congress.</p>
-                        <a href="#" target="_blank">Read more on NY Times</a>
-                    </div>
-                    <div class="news-item">
-                        <h4>Economic recovery shows strong signs</h4>
-                        <p>Job growth and consumer spending drive positive outlook.</p>
-                        <a href="#" target="_blank">Read more on NY Times</a>
-                    </div>
-                </div>
+            <div  class="card nav-card" >
+                <a href = 'https://eebrahimjoy.github.io/profile/'> 
+                <i class="fas fa-person icon"></i>
+                <h3>About Developer</h3>
+            </a>
             </div>
         </div>
     </div>
 
     <footer class="app-footer">
-        <p>&copy; 2024 eebrahimjoy. All rights reserved.</p>
-        <p>Dashboard and Tools. Designed with <i class="fas fa-heart text-red-500"></i> Ebrahim Joy.</p>
+        <p>&copy; 2025 eebrahimjoy. All rights reserved.</p>
+        <p>Dashboard and Tools. Designed with Ebrahim Joy.</p>
     </footer>
 
-    <!-- Main JavaScript file -->
+   <!-- Main JavaScript file -->
     <script src="main.js"></script>
 </body>
 </html>
