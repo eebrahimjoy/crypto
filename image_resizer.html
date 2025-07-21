@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Resizer & Editor</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Cropper.js CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Light gray background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        /* Custom styles for better aesthetics */
+        .card {
+            background-color: #ffffff;
+            border-radius: 1.5rem; /* More rounded corners */
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); /* Stronger shadow */
+            padding: 2.5rem; /* More padding */
+            width: 100%;
+            max-width: 700px; /* Slightly wider for more controls */
+            text-align: center;
+            border: 1px solid #e5e7eb; /* Light border */
+        }
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+        }
+        .file-input-label {
+            background-color: #4f46e5; /* Indigo color */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem; /* Rounded corners */
+            cursor: pointer;
+            display: inline-block;
+            transition: background-color 0.2s ease-in-out;
+            border: 1px solid #4f46e5;
+            width: 100%;
+            text-align: center;
+        }
+        .file-input-label:hover {
+            background-color: #4338ca; /* Darker indigo on hover */
+        }
+        .btn-process {
+            background-color: #10b981; /* Emerald color */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+            border: 1px solid #10b981;
+            width: 100%;
+        }
+        .btn-process:hover {
+            background-color: #059669; /* Darker emerald on hover */
+        }
+        .btn-download {
+            background-color: #3b82f6; /* Blue color */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+            border: 1px solid #3b82f6;
+            width: 100%;
+            display: none; /* Hidden by default */
+        }
+        .btn-download:hover {
+            background-color: #2563eb; /* Darker blue on hover */
+        }
+        .btn-refresh {
+            background-color: #6b7280; /* Gray color */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+            border: 1px solid #6b7280;
+            width: 100%;
+            display: none; /* Hidden by default */
+            margin-top: 1rem; /* Add some space above */
+        }
+        .btn-refresh:hover {
+            background-color: #4b5563; /* Darker gray on hover */
+        }
+        .btn-secondary { /* For Crop button */
+            background-color: #f97316; /* Orange-500 */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+            border: 1px solid #f97316;
+            width: 100%;
+        }
+        .btn-secondary:hover {
+            background-color: #ea580c; /* Orange-600 */
+        }
+        .message-box {
+            padding: 1rem;
+            border-radius: 0.75rem;
+            margin-top: 1.5rem;
+            font-weight: 500;
+            text-align: left;
+        }
+        .message-box.info {
+            background-color: #e0f2fe; /* Light blue */
+            color: #0284c7; /* Darker blue */
+            border: 1px solid #7dd3fc;
+        }
+        .message-box.success {
+            background-color: #d1fae5; /* Light green */
+            color: #065f46; /* Darker green */
+            border: 1px solid #6ee7b7;
+        }
+        .message-box.error {
+            background-color: #fee2e2; /* Light red */
+            color: #b91c1c; /* Darker red */
+            border: 1px solid #fca5a5;
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .control-group label {
+            text-align: left;
+            font-weight: 500;
+            color: #374151;
+            font-size: 0.9rem;
+        }
+        .control-group input[type="number"],
+        .control-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .control-group input[type="number"]:focus,
+        .control-group select:focus {
+            outline: none;
+            border-color: #6366f1; /* Indigo-500 */
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3);
+        }
+        .radio-group, .checkbox-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 0.5rem;
+        }
+        .radio-group label, .checkbox-group label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 400;
+            color: #4b5563;
+        }
+        .radio-group input[type="radio"], .checkbox-group input[type="checkbox"] {
+            margin-right: 0.5rem;
+            accent-color: #4f46e5; /* Custom color for radio/checkbox */
+        }
+        #imagePreviewContainer {
+            margin-top: 1.5rem;
+            border: 1px dashed #d1d5db;
+            border-radius: 0.75rem;
+            min-height: 150px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f9fafb;
+            overflow: hidden; /* Ensure image doesn't overflow */
+            position: relative; /* For Cropper.js */
+        }
+        #imagePreview {
+            max-width: 100%;
+            max-height: 300px; /* Limit preview height */
+            display: none; /* Hidden until image is loaded */
+            border-radius: 0.5rem;
+            /* Important for Cropper.js: ensure image is block and not hidden by default */
+            display: block;
+            opacity: 0; /* Hide initially, Cropper.js will make it visible */
+        }
+        #previewPlaceholder {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: block;
+        }
+        #processingCanvas {
+            display: none; /* Hidden canvas for processing */
+        }
+        .cropper-container { /* Style for Cropper.js container */
+            max-width: 100%;
+            max-height: 300px;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6">Image Resizer & Editor</h1>
+        <p class="text-gray-600 mb-8">Upload an image to resize, set background, crop, and export as PNG.</p>
+
+        <div class="mb-6">
+            <div class="file-input-wrapper">
+                <input type="file" id="imageFile" accept="image/*">
+                <label for="imageFile" class="file-input-label">
+                    <span id="fileName">Select Image File</span>
+                </label>
+            </div>
+        </div>
+
+        <div id="imagePreviewContainer" class="mb-6">
+            <img id="imagePreview" src="#" alt="Image Preview">
+            <p id="previewPlaceholder" class="text-gray-400">No image selected</p>
+        </div>
+
+        <div class="control-group">
+            <label for="currentSize">Original Size:</label>
+            <span id="currentSize" class="text-gray-700 font-medium text-left">N/A</span>
+        </div>
+
+        <button id="cropImageBtn" class="btn-secondary mb-4">Crop Image</button>
+        <button id="confirmCropBtn" class="btn-process mb-4 hidden">Confirm Crop</button>
+        <button id="cancelCropBtn" class="btn-refresh mb-4 hidden">Cancel Crop</button>
+
+        <div id="resizeControls" class="hidden">
+            <div class="control-group">
+                <label>Resize Options:</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" id="lockAspectRatio" checked> Lock Aspect Ratio</label>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="control-group">
+                    <label for="newWidth">New Width (px):</label>
+                    <input type="number" id="newWidth" value="" placeholder="e.g., 800">
+                </div>
+                <div class="control-group">
+                    <label for="newHeight">New Height (px):</label>
+                    <input type="number" id="newHeight" value="" placeholder="e.g., 600">
+                </div>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label>Max File Size (Optional):</label>
+            <div class="grid grid-cols-2 gap-4">
+                <input type="number" id="maxSizeValue" value="" min="0" placeholder="e.g., 500">
+                <select id="maxSizeUnit" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out">
+                    <option value="kb">KB</option>
+                    <option value="mb">MB</option>
+                </select>
+            </div>
+            <p class="text-xs text-gray-500 mt-1 text-left">Set a maximum file size for the output image. Quality will be reduced if needed.</p>
+        </div>
+
+        <div id="backgroundControls" class="hidden">
+            <div class="control-group">
+                <label>Background Color:</label>
+                <div class="radio-group">
+                    <label><input type="radio" name="bgColor" value="transparent" checked> Transparent</label>
+                    <label><input type="radio" name="bgColor" value="white"> White</label>
+                    <label><input type="radio" name="bgColor" value="black"> Black</label>
+                </div>
+            </div>
+        </div>
+
+        <button id="applyChangesBtn" class="btn-process mb-4 hidden">Apply Changes</button>
+
+        <span id="processedSize" class="text-gray-700 font-medium block mb-4 hidden">Processed Size: N/A</span>
+
+        <a id="downloadLink" class="btn-download" download="processed_image.png">Download Processed Image (PNG)</a>
+        <button id="refreshBtn" class="btn-refresh">Process Another Image</button>
+
+        <div id="messageBox" class="message-box info hidden"></div>
+
+        <!-- Hidden canvas for image processing -->
+        <canvas id="processingCanvas"></canvas>
+    </div>
+
+    <!-- FileSaver.js CDN for saving files -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <!-- Cropper.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+
+    <script>
+        // Get DOM elements
+        const imageFileInput = document.getElementById('imageFile');
+        const fileNameSpan = document.getElementById('fileName');
+        const imagePreview = document.getElementById('imagePreview');
+        const previewPlaceholder = document.getElementById('previewPlaceholder');
+        const currentSizeSpan = document.getElementById('currentSize');
+
+        const cropImageBtn = document.getElementById('cropImageBtn');
+        const confirmCropBtn = document.getElementById('confirmCropBtn');
+        const cancelCropBtn = document.getElementById('cancelCropBtn');
+
+        const resizeControls = document.getElementById('resizeControls');
+        const lockAspectRatioCheckbox = document.getElementById('lockAspectRatio'); // New checkbox
+        const newWidthInput = document.getElementById('newWidth');
+        const newHeightInput = document.getElementById('newHeight');
+
+        const maxSizeValueInput = document.getElementById('maxSizeValue');
+        const maxSizeUnitSelect = document.getElementById('maxSizeUnit');
+
+        const backgroundControls = document.getElementById('backgroundControls');
+        const bgColorRadios = document.querySelectorAll('input[name="bgColor"]');
+        
+        const applyChangesBtn = document.getElementById('applyChangesBtn');
+        const processedSizeSpan = document.getElementById('processedSize');
+        const downloadLink = document.getElementById('downloadLink');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const messageBox = document.getElementById('messageBox');
+        const processingCanvas = document.getElementById('processingCanvas');
+        const ctx = processingCanvas.getContext('2d');
+
+        let originalImage = null; // Stores the loaded Image object (can be updated after cropping)
+        let selectedFile = null;
+        let cropper = null; // Cropper.js instance
+        let lastEditedDimension = ''; // To track which input was last edited for ratio lock
+
+        // Function to display messages
+        function showMessage(message, type) {
+            messageBox.textContent = message;
+            messageBox.className = `message-box ${type}`;
+            messageBox.classList.remove('hidden');
+        }
+
+        // Function to reset UI elements to initial state
+        function resetUI() {
+            selectedFile = null;
+            originalImage = null;
+            if (cropper) {
+                cropper.destroy();
+                cropper = null;
+            }
+            fileNameSpan.textContent = 'Select Image File';
+            imagePreview.src = '#';
+            imagePreview.style.display = 'block'; // Keep block for Cropper.js, but hide with opacity
+            imagePreview.style.opacity = '0';
+            previewPlaceholder.style.display = 'block';
+            currentSizeSpan.textContent = 'N/A';
+            newWidthInput.value = '';
+            newHeightInput.value = '';
+            newWidthInput.readOnly = false; // Ensure both are editable on reset
+            newHeightInput.readOnly = false;
+            maxSizeValueInput.value = '';
+            maxSizeUnitSelect.value = 'kb';
+            lockAspectRatioCheckbox.checked = true; // Default to locked aspect ratio
+            document.querySelector('input[name="bgColor"][value="transparent"]').checked = true;
+            
+            cropImageBtn.style.display = 'none'; // Initially hidden until file is loaded
+            confirmCropBtn.style.display = 'none';
+            cancelCropBtn.style.display = 'none';
+            resizeControls.style.display = 'none';
+            backgroundControls.style.display = 'none'; // Hidden by default based on lockAspectRatio
+            applyChangesBtn.style.display = 'none';
+            downloadLink.style.display = 'none';
+            refreshBtn.style.display = 'none';
+            processedSizeSpan.style.display = 'none';
+            messageBox.classList.add('hidden');
+            
+            ctx.clearRect(0, 0, processingCanvas.width, processingCanvas.height);
+            processingCanvas.width = 0;
+            processingCanvas.height = 0;
+        }
+
+        // Calculate file size in readable format
+        function formatBytes(bytes, decimals = 2) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const dm = decimals < 0 ? 0 : decimals;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+        }
+
+        // Event listener for file input change
+        imageFileInput.addEventListener('change', (event) => {
+            selectedFile = event.target.files[0];
+            if (selectedFile) {
+                fileNameSpan.textContent = selectedFile.name;
+                currentSizeSpan.textContent = formatBytes(selectedFile.size);
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    imagePreview.src = e.target.result;
+                    imagePreview.style.opacity = '1'; // Make preview visible
+                    previewPlaceholder.style.display = 'none';
+
+                    originalImage = new Image();
+                    originalImage.onload = () => {
+                        // Set initial resize dimensions to original image dimensions
+                        newWidthInput.value = originalImage.width;
+                        newHeightInput.value = originalImage.height;
+                        // Apply initial lock aspect ratio state
+                        handleAspectRatioLockChange();
+
+                        // Show controls after image loads
+                        cropImageBtn.style.display = 'block';
+                        resizeControls.style.display = 'block';
+                        // Background controls visibility handled by handleAspectRatioLockChange()
+                        applyChangesBtn.style.display = 'block';
+                    };
+                    originalImage.src = e.target.result;
+                };
+                reader.readAsDataURL(selectedFile);
+
+                // Reset buttons and messages
+                downloadLink.style.display = 'none';
+                refreshBtn.style.display = 'none';
+                processedSizeSpan.style.display = 'none';
+                messageBox.classList.add('hidden');
+            } else {
+                resetUI();
+            }
+        });
+
+        // Function to handle aspect ratio lock checkbox change
+        function handleAspectRatioLockChange() {
+            if (!originalImage) return;
+
+            if (lockAspectRatioCheckbox.checked) {
+                // Lock aspect ratio: only one input is active, the other is calculated and read-only
+                newWidthInput.readOnly = false; // Default to width being editable
+                newHeightInput.readOnly = true; // Height becomes read-only
+                // Calculate height based on current width (or original width if empty)
+                const currentWidth = parseInt(newWidthInput.value) || originalImage.width;
+                newHeightInput.value = Math.round(currentWidth / (originalImage.width / originalImage.height));
+                lastEditedDimension = 'width'; // Set initial last edited
+                backgroundControls.style.display = 'none'; // Hide background controls when locked
+            } else {
+                // Unlock aspect ratio: both inputs are editable
+                newWidthInput.readOnly = false;
+                newHeightInput.readOnly = false;
+                // Pre-fill with original dimensions if empty
+                if (!newWidthInput.value) newWidthInput.value = originalImage.width;
+                if (!newHeightInput.value) newHeightInput.value = originalImage.height;
+                lastEditedDimension = ''; // Clear last edited
+                backgroundControls.style.display = 'block'; // Show background controls when unlocked
+            }
+        }
+
+        // Event listener for aspect ratio lock checkbox
+        lockAspectRatioCheckbox.addEventListener('change', handleAspectRatioLockChange);
+
+        // Aspect ratio locking for resize inputs
+        let isUpdatingResizeInput = false; // Flag to prevent infinite loops
+
+        newWidthInput.addEventListener('input', () => {
+            if (isUpdatingResizeInput) return;
+            if (lockAspectRatioCheckbox.checked && originalImage) {
+                isUpdatingResizeInput = true;
+                const newWidth = parseInt(newWidthInput.value);
+                if (!isNaN(newWidth) && newWidth > 0) {
+                    newHeightInput.value = Math.round(newWidth / (originalImage.width / originalImage.height));
+                    newHeightInput.readOnly = true;
+                    newWidthInput.readOnly = false;
+                    lastEditedDimension = 'width';
+                } else {
+                    newHeightInput.value = '';
+                }
+                isUpdatingResizeInput = false;
+            }
+        });
+
+        newHeightInput.addEventListener('input', () => {
+            if (isUpdatingResizeInput) return;
+            if (lockAspectRatioCheckbox.checked && originalImage) {
+                isUpdatingResizeInput = true;
+                const newHeight = parseInt(newHeightInput.value);
+                if (!isNaN(newHeight) && newHeight > 0) {
+                    newWidthInput.value = Math.round(newHeight * (originalImage.width / originalImage.height));
+                    newWidthInput.readOnly = true;
+                    newHeightInput.readOnly = false;
+                    lastEditedDimension = 'height';
+                } else {
+                    newWidthInput.value = '';
+                }
+                isUpdatingResizeInput = false;
+            }
+        });
+
+        // --- Cropping Logic ---
+        cropImageBtn.addEventListener('click', () => {
+            if (!originalImage) {
+                showMessage('Please select an image first to crop.', 'error');
+                return;
+            }
+
+            // Hide other controls
+            cropImageBtn.style.display = 'none';
+            resizeControls.style.display = 'none';
+            backgroundControls.style.display = 'none';
+            applyChangesBtn.style.display = 'none';
+            downloadLink.style.display = 'none';
+            refreshBtn.style.display = 'none';
+            processedSizeSpan.style.display = 'none';
+            messageBox.classList.add('hidden');
+            
+            // Show crop specific buttons
+            confirmCropBtn.style.display = 'block';
+            cancelCropBtn.style.display = 'block';
+
+            // Initialize Cropper.js
+            if (cropper) {
+                cropper.destroy();
+            }
+            cropper = new Cropper(imagePreview, {
+                aspectRatio: NaN, // Allow free cropping
+                viewMode: 1, // Restrict the crop box to not exceed the canvas
+                autoCropArea: 0.8, // 80% of the image
+                background: false, // Don't show cropper background
+                ready() {
+                    imagePreview.style.opacity = '1'; // Ensure image is visible for cropper
+                }
+            });
+        });
+
+        confirmCropBtn.addEventListener('click', async () => {
+            if (!cropper) return;
+
+            showMessage('Applying crop... Please wait.', 'info');
+            
+            // Get cropped canvas data
+            const croppedCanvas = cropper.getCroppedCanvas();
+            const croppedDataUrl = croppedCanvas.toDataURL('image/png');
+
+            // Update originalImage with the cropped version
+            originalImage = new Image();
+            originalImage.onload = () => {
+                // Update resize inputs with new dimensions
+                newWidthInput.value = originalImage.width;
+                newHeightInput.value = originalImage.height;
+                showMessage('Image cropped successfully!', 'success');
+                // Show relevant controls again
+                cropImageBtn.style.display = 'block';
+                resizeControls.style.display = 'block';
+                // Re-evaluate background controls visibility based on aspect ratio lock
+                handleAspectRatioLockChange(); 
+                applyChangesBtn.style.display = 'block';
+                refreshBtn.style.display = 'block'; // Allow refresh after crop
+            };
+            originalImage.onerror = (error) => {
+                console.error("Error loading cropped image:", error);
+                showMessage("Failed to load cropped image.", "error");
+                resetUI(); // Reset on critical error
+            };
+            originalImage.src = croppedDataUrl;
+
+            // Update image preview to show cropped version
+            imagePreview.src = croppedDataUrl;
+            imagePreview.style.opacity = '1';
+
+            // Destroy cropper instance
+            cropper.destroy();
+            cropper = null;
+
+            // Hide crop specific buttons
+            confirmCropBtn.style.display = 'none';
+            cancelCropBtn.style.display = 'none';
+        });
+
+        cancelCropBtn.addEventListener('click', () => {
+            if (cropper) {
+                cropper.destroy();
+                cropper = null;
+            }
+            imagePreview.style.opacity = '1'; // Ensure preview is visible
+            // Restore original image source if it was changed by cropper
+            if (originalImage && originalImage.src) {
+                 imagePreview.src = originalImage.src;
+            } else {
+                 imagePreview.style.display = 'none';
+                 previewPlaceholder.style.display = 'block';
+            }
+
+            showMessage('Cropping cancelled.', 'info');
+            // Show original controls
+            cropImageBtn.style.display = 'block';
+            resizeControls.style.display = 'block';
+            // Re-evaluate background controls visibility based on aspect ratio lock
+            handleAspectRatioLockChange(); 
+            applyChangesBtn.style.display = 'block';
+            refreshBtn.style.display = 'block';
+            confirmCropBtn.style.display = 'none';
+            cancelCropBtn.style.display = 'none';
+        });
+        // --- End Cropping Logic ---
+
+
+        // Event listener for apply changes button click
+        applyChangesBtn.addEventListener('click', async () => {
+            if (!originalImage) {
+                showMessage('Please select an image file first.', 'error');
+                return;
+            }
+
+            applyChangesBtn.style.display = 'none';
+            downloadLink.style.display = 'none';
+            refreshBtn.style.display = 'none';
+            processedSizeSpan.style.display = 'none';
+            cropImageBtn.style.display = 'none'; // Hide crop button during final processing
+            showMessage('Applying changes... Please wait.', 'info');
+
+            try {
+                let finalWidth, finalHeight;
+                if (lockAspectRatioCheckbox.checked) {
+                    const aspectRatio = originalImage.width / originalImage.height;
+                    const newWidth = parseInt(newWidthInput.value);
+                    const newHeight = parseInt(newHeightInput.value);
+
+                    if (!isNaN(newWidth) && newWidth > 0 && lastEditedDimension === 'width') {
+                        finalWidth = newWidth;
+                        finalHeight = Math.round(newWidth / aspectRatio);
+                    } else if (!isNaN(newHeight) && newHeight > 0 && lastEditedDimension === 'height') {
+                        finalHeight = newHeight;
+                        finalWidth = Math.round(newHeight * aspectRatio);
+                    } else {
+                        // Fallback to original dimensions if no valid input for locked mode
+                        finalWidth = originalImage.width;
+                        finalHeight = originalImage.height;
+                    }
+
+                    if (isNaN(finalWidth) || finalWidth <= 0 || isNaN(finalHeight) || finalHeight <= 0) {
+                        showMessage('Please enter a valid positive number for width or height when aspect ratio is locked.', 'error');
+                        applyChangesBtn.style.display = 'block';
+                        cropImageBtn.style.display = 'block';
+                        return;
+                    }
+
+                } else { // Aspect ratio unlocked
+                    const desiredWidth = parseInt(newWidthInput.value);
+                    const desiredHeight = parseInt(newHeightInput.value);
+
+                    if (!desiredWidth || !desiredHeight || desiredWidth <= 0 || desiredHeight <= 0) {
+                        showMessage('Please enter valid positive numbers for both New Width and New Height.', 'error');
+                        applyChangesBtn.style.display = 'block';
+                        cropImageBtn.style.display = 'block'; // Re-show crop button
+                        return;
+                    }
+                    finalWidth = desiredWidth;
+                    finalHeight = desiredHeight;
+                }
+                
+                // Set canvas dimensions for the final output
+                processingCanvas.width = finalWidth;
+                processingCanvas.height = finalHeight;
+
+                // Set background color (only if aspect ratio is NOT locked)
+                if (!lockAspectRatioCheckbox.checked) {
+                    const selectedBgColor = document.querySelector('input[name="bgColor"]:checked').value;
+                    if (selectedBgColor === 'white') {
+                        ctx.fillStyle = '#FFFFFF';
+                        ctx.fillRect(0, 0, processingCanvas.width, processingCanvas.height);
+                    } else if (selectedBgColor === 'black') {
+                        ctx.fillStyle = '#000000';
+                        ctx.fillRect(0, 0, processingCanvas.width, processingCanvas.height);
+                    } else {
+                        // Transparent (default behavior of canvas if not filled)
+                        ctx.clearRect(0, 0, processingCanvas.width, processingCanvas.height);
+                    }
+                } else {
+                    // If aspect ratio is locked, always draw with transparency (or whatever original image has)
+                    ctx.clearRect(0, 0, processingCanvas.width, processingCanvas.height);
+                }
+
+
+                // Draw the (potentially cropped and then) resized image onto the canvas
+                ctx.drawImage(
+                    originalImage,
+                    0, 0, originalImage.width, originalImage.height, // Source (entire originalImage, which might be cropped)
+                    0, 0, finalWidth, finalHeight       // Destination (entire canvas)
+                );
+
+                let processedBlob;
+                const maxSizeValue = parseFloat(maxSizeValueInput.value);
+                const maxSizeUnit = maxSizeUnitSelect.value;
+                let maxSizeBytes = 0;
+
+                if (!isNaN(maxSizeValue) && maxSizeValue > 0) {
+                    if (maxSizeUnit === 'kb') {
+                        maxSizeBytes = maxSizeValue * 1024;
+                    } else { // mb
+                        maxSizeBytes = maxSizeValue * 1024 * 1024;
+                    }
+                }
+
+                if (maxSizeBytes > 0) {
+                    let quality = 0.9; // Start with slightly reduced quality
+                    let currentBlob = await new Promise(resolve => processingCanvas.toBlob(resolve, 'image/png', quality));
+
+                    // Iteratively reduce quality until size is met or minimum quality reached
+                    while (currentBlob.size > maxSizeBytes && quality > 0.1) {
+                        quality -= 0.1;
+                        currentBlob = await new Promise(resolve => processingCanvas.toBlob(resolve, 'image/png', quality));
+                    }
+                    processedBlob = currentBlob;
+
+                    if (processedBlob.size > maxSizeBytes) {
+                        showMessage('Warning: Could not compress image to desired size without significant quality loss. Downloaded image may still be larger than specified max size.', 'info');
+                    } else {
+                        showMessage('Image processed and compressed successfully! Click "Download" to save.', 'success');
+                    }
+                } else {
+                    // No max size specified, just get the blob
+                    processedBlob = await new Promise(resolve => processingCanvas.toBlob(resolve, 'image/png'));
+                    showMessage('Image processed successfully! Click "Download" to save.', 'success');
+                }
+
+                // Update processed size display
+                processedSizeSpan.textContent = `Processed Size: ${formatBytes(processedBlob.size)}`;
+                processedSizeSpan.style.display = 'block';
+
+                // Create a URL for the Blob and update download link
+                downloadLink.href = URL.createObjectURL(processedBlob);
+                downloadLink.download = `processed_${selectedFile.name.replace(/\.[^/.]+$/, "")}.png`;
+
+                downloadLink.style.display = 'block';
+                refreshBtn.style.display = 'block';
+                // Ensure other buttons are hidden
+                applyChangesBtn.style.display = 'none';
+                cropImageBtn.style.display = 'none';
+
+            } catch (error) {
+                console.error('Error processing image:', error);
+                showMessage(`Error processing image: ${error.message}. Please try again.`, 'error');
+                applyChangesBtn.style.display = 'block';
+                cropImageBtn.style.display = 'block'; // Re-show crop button on error
+                refreshBtn.style.display = 'block';
+                downloadLink.style.display = 'none';
+                processedSizeSpan.style.display = 'none';
+            }
+        });
+
+        // Event listener for refresh button click
+        refreshBtn.addEventListener('click', () => {
+            resetUI();
+        });
+
+        // Initial UI reset
+        resetUI();
+    </script>
+</body>
+</html>
