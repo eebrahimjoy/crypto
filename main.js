@@ -291,7 +291,7 @@ const App = (() => {
                 dailyExpensesNavBtn: document.getElementById('dailyExpensesNavBtn'),
                 dailyNeedsNavBtn: document.getElementById('dailyNeedsNavBtn'),
                 pdfNavBtn: document.getElementById('pdfNavBtn'),
-                footballNavBtn: document.getElementById('footballNavBtn')
+                pdfToImageNavBtn: document.getElementById('pdfToImageNavBtn')
             };
         } else if (currentPage === 'percentage_calculator.html') {
             elements = {
@@ -860,7 +860,7 @@ const App = (() => {
             if (elements.dailyExpensesNavBtn) elements.dailyExpensesNavBtn.addEventListener('click', () => navigateTo('daily_expenses.html'));
             if (elements.dailyNeedsNavBtn) elements.dailyNeedsNavBtn.addEventListener('click', () => navigateTo('daily_needs.html'));
             if (elements.pdfNavBtn) elements.pdfNavBtn.addEventListener('click', () => navigateTo('pdf_helper.html'));
-            if (elements.footballNavBtn) elements.footballNavBtn.addEventListener('click', () => navigateTo('football.html'));
+            if (elements.pdfToImageNavBtn) elements.pdfToImageNavBtn.addEventListener('click', () => navigateTo('pdf_to_images.html'));
 
         } else if (currentPage === 'percentage_calculator.html') {
             if (elements.calculatePercentageBtn) elements.calculatePercentageBtn.addEventListener('click', handleCalculatePercentage);
