@@ -289,6 +289,7 @@ const App = (() => {
                 percentageCalculatorNavBtn: document.getElementById('percentageCalculatorNavBtn'),
                 weatherTimeNavBtn: document.getElementById('weatherTimeNavBtn'),
                 dailyExpensesNavBtn: document.getElementById('dailyExpensesNavBtn'),
+                voucherBtn: document.getElementById('voucherBtn'),
                 imageBgRemoverNavBtn: document.getElementById('imageBgRemoverNavBtn'),
                 imageResizerNavBtn: document.getElementById('imageResizerNavBtn'),
                 pdfNavBtn: document.getElementById('pdfNavBtn'),
@@ -859,6 +860,7 @@ const App = (() => {
             if (elements.percentageCalculatorNavBtn) elements.percentageCalculatorNavBtn.addEventListener('click', () => navigateTo('percentage_calculator.html'));
             if (elements.weatherTimeNavBtn) elements.weatherTimeNavBtn.addEventListener('click', () => navigateTo('weather_time.html'));
             if (elements.dailyExpensesNavBtn) elements.dailyExpensesNavBtn.addEventListener('click', () => navigateTo('daily_expenses.html'));
+            if (elements.voucherBtn) elements.voucherBtn.addEventListener('click', () => navigateTo('voucher.html'));
             if (elements.imageBgRemoverNavBtn) elements.imageBgRemoverNavBtn.addEventListener('click', () => navigateTo('image_bg_remover.html'));
             if (elements.imageResizerNavBtn) elements.imageResizerNavBtn.addEventListener('click', () => navigateTo('image_resizer.html'));
             if (elements.pdfNavBtn) elements.pdfNavBtn.addEventListener('click', () => navigateTo('pdf_helper.html'));
