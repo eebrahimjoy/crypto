@@ -293,6 +293,7 @@ const App = (() => {
                 imageBgRemoverNavBtn: document.getElementById('imageBgRemoverNavBtn'),
                 imageResizerNavBtn: document.getElementById('imageResizerNavBtn'),
                 pdfNavBtn: document.getElementById('pdfNavBtn'),
+                base64Converter: document.getElementById('base64Converter'),
                 pdfToImageNavBtn: document.getElementById('pdfToImageNavBtn')
             };
         } else if (currentPage === 'percentage_calculator.html') {
@@ -864,7 +865,7 @@ const App = (() => {
             if (elements.imageBgRemoverNavBtn) elements.imageBgRemoverNavBtn.addEventListener('click', () => navigateTo('image_bg_remover.html'));
             if (elements.imageResizerNavBtn) elements.imageResizerNavBtn.addEventListener('click', () => navigateTo('image_resizer.html'));
             if (elements.pdfNavBtn) elements.pdfNavBtn.addEventListener('click', () => navigateTo('pdf_helper.html'));
-            if (elements.base64_converter) elements.pdfNavBtn.addEventListener('click', () => navigateTo('base64_converter.html'));
+            if (elements.base64Converter) elements.base64Converter.addEventListener('click', () => navigateTo('base64_converter.html'));
             if (elements.pdfToImageNavBtn) elements.pdfToImageNavBtn.addEventListener('click', () => navigateTo('pdf_to_images.html'));
 
         } else if (currentPage === 'percentage_calculator.html') {
