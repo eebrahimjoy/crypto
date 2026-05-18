@@ -4,68 +4,73 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Loyapy Voucher Generator</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
-            color: #1f2937;
+            background-color: #f8fafc;
+            color: #0f172a;
         }
 
         .voucher-container {
             width: 100%;
-            max-width: 600px;
-            margin: 2rem auto;
-            background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+            max-width: 650px;
+            margin: 3rem auto;
+            background: #ffffff;
             border-radius: 1.5rem;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-            padding: 2.5rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            padding: 3rem;
+            border: 1px solid #e2e8f0;
         }
 
         .input-group label {
             font-weight: 500;
+            font-size: 0.875rem;
+            color: #334155;
         }
 
-        .input-group input, .input-group textarea {
-            border: 1px solid #d1d5db;
-            border-radius: 0.5rem;
-            padding: 0.75rem;
+        .input-group input, .input-group textarea, .input-group select {
+            border: 1px solid #cbd5e1;
+            border-radius: 0.75rem;
+            padding: 0.75rem 1rem;
             transition: all 0.2s ease-in-out;
+            background-color: #f8fafc;
         }
 
-        .input-group input:focus, .input-group textarea:focus {
+        .input-group input:focus, .input-group textarea:focus, .input-group select:focus {
             outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+            border-color: #2563eb;
+            background-color: #ffffff;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
         }
 
         .voucher-output {
             display: none;
             background-color: #ffffff;
-            border-radius: 1rem;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            padding: 2rem;
-            margin-top: 2rem;
+            border-radius: 1.25rem;
+            border: 1px solid #e2e8f0;
+            padding: 2.5rem;
+            margin-top: 2.5rem;
             position: relative;
         }
 
         .voucher-header {
-            border-bottom: 2px dashed #e5e7eb;
-            padding-bottom: 1.5rem;
-            margin-bottom: 1.5rem;
+            border-bottom: 2px dashed #cbd5e1;
+            padding-bottom: 1.75rem;
+            margin-bottom: 1.75rem;
         }
 
         .voucher-details {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 1rem 2rem;
+            gap: 1.25rem 2rem;
         }
 
         .voucher-total {
-            border-top: 2px dashed #e5e7eb;
-            padding-top: 1.5rem;
-            margin-top: 1.5rem;
+            border-top: 2px dashed #cbd5e1;
+            padding-top: 1.75rem;
+            margin-top: 1.75rem;
         }
 
         @media print {
@@ -78,11 +83,12 @@
 
             .voucher-container {
                 box-shadow: none;
+                border: none;
                 width: 100%;
                 max-width: 100%;
                 margin: 0;
                 border-radius: 0;
-                padding: 1cm;
+                padding: 0;
             }
 
             .form-section, .button-group {
@@ -92,76 +98,80 @@
             .voucher-output {
                 display: block !important;
                 box-shadow: none;
+                border: none;
                 margin: 0;
+                padding: 0;
             }
         }
     </style>
 </head>
-<body class="p-6 md:p-10">
+<body class="p-4 md:p-10">
 
     <div class="voucher-container">
         <div class="form-section">
-            <div class="flex justify-between items-center mb-6">
-                <h1 class="text-3xl font-bold text-center" data-i18n="title"></h1>
-                <div class="input-group">
-                    <select id="language-select" class="p-2 border rounded-full text-sm">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+                <h1 class="text-2xl font-extrabold text-slate-800 tracking-tight" data-i18n="title"></h1>
+                <div class="input-group w-full sm:w-auto">
+                    <select id="language-select" class="w-full sm:w-auto py-1.5 px-3 border rounded-full text-sm font-medium bg-white cursor-pointer shadow-sm">
                         <option value="bn" selected>বাংলা</option>
                         <option value="en">English</option>
                     </select>
                 </div>
             </div>
 
-            <form id="voucherForm" class="space-y-6">
+            <form id="voucherForm" class="space-y-5">
                 <!-- User Details -->
-                <div class="input-group">
-                    <label for="userName" class="block text-gray-700 mb-1" data-i18n="customerNameLabel"></label>
-                    <input type="text" id="userName" class="w-full text-gray-900" data-i18n-placeholder="customerNamePlaceholder" required>
+                <div class="input-group class flex flex-col">
+                    <label for="userName" class="mb-1.5" data-i18n="customerNameLabel"></label>
+                    <input type="text" id="userName" class="w-full text-slate-900 font-medium" data-i18n-placeholder="customerNamePlaceholder" required>
                 </div>
                 <!-- Phone Number -->
-                <div class="input-group">
-                    <label for="phoneNumber" class="block text-gray-700 mb-1" data-i18n="phoneNumberLabel"></label>
-                    <input type="tel" id="phoneNumber" class="w-full text-gray-900" data-i18n-placeholder="phoneNumberPlaceholder">
+                <div class="input-group flex flex-col">
+                    <label for="phoneNumber" class="mb-1.5" data-i18n="phoneNumberLabel"></label>
+                    <input type="tel" id="phoneNumber" class="w-full text-slate-900" data-i18n-placeholder="phoneNumberPlaceholder">
                 </div>
 
-                <div class="input-group">
-                    <label for="item" class="block text-gray-700 mb-1" data-i18n="itemLabel"></label>
-                    <input type="text" id="item" class="w-full text-gray-900" data-i18n-placeholder="itemPlaceholder" required>
+                <div class="input-group flex flex-col">
+                    <label for="item" class="mb-1.5" data-i18n="itemLabel"></label>
+                    <input type="text" id="item" class="w-full text-slate-900 font-medium" data-i18n-placeholder="itemPlaceholder" required>
                 </div>
 
-                <div class="input-group">
-                    <label for="quantity" class="block text-gray-700 mb-1" data-i18n="quantityLabel"></label>
-                    <input type="number" id="quantity" class="w-full text-gray-900" value="1" min="1" required>
-                </div>
-
-                <div class="input-group">
-                    <label for="price" class="block text-gray-700 mb-1" data-i18n="priceLabel"></label>
-                    <input type="number" id="price" class="w-full text-gray-900" data-i18n-placeholder="pricePlaceholder" min="0" step="0.01" required>
-                </div>
-
-                <div class="input-group">
-                    <label for="address" class="block text-gray-700 mb-1" data-i18n="addressLabel"></label>
-                    <textarea id="address" rows="3" class="w-full text-gray-900" data-i18n-placeholder="addressPlaceholder"></textarea>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="input-group">
-                        <label for="deliveryCharge" class="block text-gray-700 mb-1" data-i18n="deliveryChargeLabel"></label>
-                        <input type="number" id="deliveryCharge" class="w-full text-gray-900" value="0.00" min="0" step="0.01">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="input-group flex flex-col">
+                        <label for="quantity" class="mb-1.5" data-i18n="quantityLabel"></label>
+                        <input type="number" id="quantity" class="w-full text-slate-900" value="1" min="1" required>
                     </div>
 
-                    <div class="input-group">
-                        <label for="discount" class="block text-gray-700 mb-1" data-i18n="discountLabel"></label>
-                        <input type="number" id="discount" class="w-full text-gray-900" value="0" min="0" max="100">
+                    <div class="input-group flex flex-col">
+                        <label for="price" class="mb-1.5" data-i18n="priceLabel"></label>
+                        <input type="number" id="price" class="w-full text-slate-900" data-i18n-placeholder="pricePlaceholder" min="0" step="0.01" required>
+                    </div>
+                </div>
+
+                <div class="input-group flex flex-col">
+                    <label for="address" class="mb-1.5" data-i18n="addressLabel"></label>
+                    <textarea id="address" rows="3" class="w-full text-slate-900" data-i18n-placeholder="addressPlaceholder"></textarea>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="input-group flex flex-col">
+                        <label for="deliveryCharge" class="mb-1.5" data-i18n="deliveryChargeLabel"></label>
+                        <input type="number" id="deliveryCharge" class="w-full text-slate-900" value="0.00" min="0" step="0.01">
                     </div>
 
-                    <div class="input-group">
-                        <label for="advance" class="block text-gray-700 mb-1" data-i18n="advanceLabel"></label>
-                        <input type="number" id="advance" class="w-full text-gray-900" data-i18n-placeholder="advancePlaceholder" min="0" step="0.01">
+                    <div class="input-group flex flex-col">
+                        <label for="discount" class="mb-1.5" data-i18n="discountLabel"></label>
+                        <input type="number" id="discount" class="w-full text-slate-900" value="0" min="0" max="100">
+                    </div>
+
+                    <div class="input-group flex flex-col">
+                        <label for="advance" class="mb-1.5" data-i18n="advanceLabel"></label>
+                        <input type="number" id="advance" class="w-full text-slate-900" data-i18n-placeholder="advancePlaceholder" min="0" step="0.01">
                     </div>
                 </div>
 
                 <div class="button-group pt-4 flex justify-center">
-                    <button type="submit" class="bg-blue-600 text-white font-semibold py-3 px-8 rounded-full shadow-lg hover:bg-blue-700 transition duration-300 transform hover:scale-105" data-i18n="generateButton"></button>
+                    <button type="submit" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-10 rounded-xl shadow-lg shadow-blue-600/10 transition duration-300 transform active:scale-95" data-i18n="generateButton"></button>
                 </div>
             </form>
         </div>
@@ -170,60 +180,59 @@
         <div id="voucherOutput" class="voucher-output">
             <div class="voucher-header flex items-center justify-between">
                 <div class="flex items-center">
-                    <img src="img/logo.png" alt="Loyapy Logo" class="h-20 w-auto mr-4">
-                    <h3 class="text-5xl font-extrabold text-blue-600">Loyapy</h3>
+                    <img src="img/logo.png" alt="Loyapy Logo" class="h-16 w-auto mr-3.5">
+                    <h3 class="text-4xl font-black text-blue-600 tracking-tight">Loyapy</h3>
                 </div>
-                <div class="flex flex-col text-right text-sm text-gray-500">
-                    <p class="font-semibold">
+                <div class="flex flex-col text-right text-xs text-slate-500 font-medium space-y-0.5">
+                    <p class="font-bold text-sm mb-0.5">
                         <a href="https://www.loyapy.com" class="text-blue-600 hover:underline">www.loyapy.com</a>
                     </p>
-                    <span>+880 1963-188339</span>
-                    <span>+880 1735-528254</span>
+                    <span class="tracking-wide text-slate-700">+8801963188339</span>
                 </div>
             </div>
             
             <div class="voucher-details">
                 <div>
-                    <p class="text-gray-500 font-medium" data-i18n="outputCustomer"></p>
-                    <p id="outputUserName" class="text-xl font-semibold text-gray-900"></p>
+                    <p class="text-xs text-slate-400 font-bold uppercase tracking-wider mb-0.5" data-i18n="outputCustomer"></p>
+                    <p id="outputUserName" class="text-lg font-bold text-slate-800"></p>
                 </div>
                 <div>
-                    <p class="text-gray-500 font-medium" data-i18n="outputDate"></p>
-                    <p id="outputDate" class="text-lg font-semibold text-gray-900"></p>
+                    <p class="text-xs text-slate-400 font-bold uppercase tracking-wider mb-0.5" data-i18n="outputDate"></p>
+                    <p id="outputDate" class="text-base font-semibold text-slate-800"></p>
                 </div>
                 <div>
-                    <p class="text-gray-500 font-medium" data-i18n="outputPhone"></p>
-                    <p id="outputPhoneNumber" class="text-lg font-semibold text-gray-900"></p>
+                    <p class="text-xs text-slate-400 font-bold uppercase tracking-wider mb-0.5" data-i18n="outputPhone"></p>
+                    <p id="outputPhoneNumber" class="text-base font-semibold text-slate-800"></p>
                 </div>
                 <div>
-                    <p class="text-gray-500 font-medium" data-i18n="outputItem"></p>
-                    <p id="outputItem" class="text-xl font-semibold text-gray-900"></p>
+                    <p class="text-xs text-slate-400 font-bold uppercase tracking-wider mb-0.5" data-i18n="outputItem"></p>
+                    <p id="outputItem" class="text-lg font-bold text-slate-800"></p>
                 </div>
                 <div>
-                    <p class="text-gray-500 font-medium" data-i18n="outputQuantity"></p>
-                    <p id="outputQuantity" class="text-xl font-semibold text-gray-900"></p>
+                    <p class="text-xs text-slate-400 font-bold uppercase tracking-wider mb-0.5" data-i18n="outputQuantity"></p>
+                    <p id="outputQuantity" class="text-lg font-bold text-slate-800"></p>
                 </div>
                 <div>
-                    <p class="text-gray-500 font-medium" data-i18n="outputAddress"></p>
-                    <p id="outputAddress" class="text-lg font-semibold text-gray-900"></p>
+                    <p class="text-xs text-slate-400 font-bold uppercase tracking-wider mb-0.5" data-i18n="outputAddress"></p>
+                    <p id="outputAddress" class="text-base font-semibold text-slate-800"></p>
                 </div>
                 <div>
-                    <p class="text-gray-500 font-medium" data-i18n="outputDeliveryCharge"></p>
-                    <p id="outputDeliveryCharge" class="text-lg font-semibold text-gray-900"></p>
+                    <p class="text-xs text-slate-400 font-bold uppercase tracking-wider mb-0.5" data-i18n="outputDeliveryCharge"></p>
+                    <p id="outputDeliveryCharge" class="text-base font-semibold text-slate-800"></p>
                 </div>
                 <div id="outputAdvanceContainer" class="hidden">
-                    <p class="text-gray-500 font-medium" data-i18n="outputAdvance"></p>
-                    <p id="outputAdvance" class="text-lg font-semibold text-green-600"></p>
+                    <p class="text-xs text-slate-400 font-bold uppercase tracking-wider mb-0.5" data-i18n="outputAdvance"></p>
+                    <p id="outputAdvance" class="text-base font-bold text-green-600"></p>
                 </div>
             </div>
 
             <div class="voucher-total mt-8 text-right">
-                <p class="text-2xl font-bold text-gray-900" id="outputTotal"></p>
-                <p class="text-sm text-gray-500 mt-1" data-i18n="outputTotalInfo"></p>
+                <p class="text-2xl font-extrabold text-slate-900" id="outputTotal"></p>
+                <p class="text-xs text-slate-400 font-medium mt-1" data-i18n="outputTotalInfo"></p>
             </div>
 
             <div class="button-group mt-8 flex justify-center print:hidden">
-                <button id="downloadPdfBtn" class="bg-gray-800 text-white font-semibold py-3 px-8 rounded-full shadow-lg hover:bg-gray-900 transition duration-300 transform hover:scale-105" data-i18n="downloadButton"></button>
+                <button id="downloadPdfBtn" class="bg-slate-900 hover:bg-slate-800 text-white font-semibold py-3 px-10 rounded-xl shadow-lg transition duration-300 transform active:scale-95" data-i18n="downloadButton"></button>
             </div>
         </div>
     </div>
@@ -332,7 +341,6 @@
             // Handle language change
             languageSelect.addEventListener('change', (e) => {
                 updateLanguage(e.target.value);
-                // Trigger form submission to visually refresh calculated string values if output is active
                 if(voucherOutput.style.display === 'block') {
                     voucherForm.dispatchEvent(new Event('submit'));
                 }
@@ -366,10 +374,10 @@
                     // Update voucher fields
                     outputUserName.textContent = userName;
                     outputDate.textContent = currentDate;
-                    outputPhoneNumber.textContent = phoneNumber;
+                    outputPhoneNumber.textContent = phoneNumber || '—';
                     outputItem.textContent = item;
                     outputQuantity.textContent = quantity;
-                    outputAddress.textContent = address;
+                    outputAddress.textContent = address || '—';
                     outputDeliveryCharge.textContent = `৳${deliveryCharge.toFixed(2)}`;
                     
                     if (advance > 0) {
@@ -392,18 +400,20 @@
 
             downloadPdfBtn.addEventListener('click', () => {
                 const userName = document.getElementById('userName').value;
+                const item = document.getElementById('item').value;
                 
-                // Sanitize user code name to handle files safely
+                // Sanitize fields cleanly for file systems
                 const cleanedUserName = userName.trim().toLowerCase().replace(/[^a-z0-9]/g, '_').replace(/__+/g, '_');
+                const cleanedItemName = item.trim().toLowerCase().replace(/[^a-z0-9]/g, '_').replace(/__+/g, '_');
                 
-                // Construct static loyapy_product name joined with dynamic user code customer name
+                // Enforce dynamic title layout layout execution
                 const originalTitle = document.title;
-                document.title = `loyapy_product_${cleanedUserName}`;
+                document.title = `loyapy_${cleanedItemName}_${cleanedUserName}`;
 
-                // Use the browser's native print function to save as PDF
+                // Trigger print layout
                 window.print();
                 
-                // Reset the title back to original after printing
+                // Reset standard layout configuration
                 document.title = originalTitle;
             });
         });
