@@ -143,7 +143,7 @@
                     <textarea id="address" rows="3" class="w-full text-gray-900" data-i18n-placeholder="addressPlaceholder"></textarea>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="input-group">
                         <label for="deliveryCharge" class="block text-gray-700 mb-1" data-i18n="deliveryChargeLabel"></label>
                         <input type="number" id="deliveryCharge" class="w-full text-gray-900" value="0.00" min="0" step="0.01">
@@ -152,6 +152,11 @@
                     <div class="input-group">
                         <label for="discount" class="block text-gray-700 mb-1" data-i18n="discountLabel"></label>
                         <input type="number" id="discount" class="w-full text-gray-900" value="0" min="0" max="100">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="advance" class="block text-gray-700 mb-1" data-i18n="advanceLabel"></label>
+                        <input type="number" id="advance" class="w-full text-gray-900" data-i18n-placeholder="advancePlaceholder" min="0" step="0.01">
                     </div>
                 </div>
 
@@ -206,10 +211,14 @@
                     <p class="text-gray-500 font-medium" data-i18n="outputDeliveryCharge"></p>
                     <p id="outputDeliveryCharge" class="text-lg font-semibold text-gray-900"></p>
                 </div>
+                <div id="outputAdvanceContainer" class="hidden">
+                    <p class="text-gray-500 font-medium" data-i18n="outputAdvance"></p>
+                    <p id="outputAdvance" class="text-lg font-semibold text-green-600"></p>
+                </div>
             </div>
 
             <div class="voucher-total mt-8 text-right">
-                <p class="text-xl font-bold text-gray-900" data-i18n="outputTotalAmount" id="outputTotal"></p>
+                <p class="text-2xl font-bold text-gray-900" id="outputTotal"></p>
                 <p class="text-sm text-gray-500 mt-1" data-i18n="outputTotalInfo"></p>
             </div>
 
@@ -236,6 +245,8 @@
                 addressPlaceholder: "যেমন, ১২৩ মেইন স্ট্রিট, যেকোনো শহর",
                 deliveryChargeLabel: "ডেলিভারি চার্জ (৳)",
                 discountLabel: "ছাড় (%)",
+                advanceLabel: "অগ্রিম প্রদান (৳)",
+                advancePlaceholder: "যেমন, 20.00",
                 generateButton: "ভাউচার তৈরি করুন",
                 outputCustomer: "গ্রাহক",
                 outputDate: "তারিখ",
@@ -244,8 +255,9 @@
                 outputQuantity: "পরিমাণ",
                 outputAddress: "ঠিকানা",
                 outputDeliveryCharge: "ডেলিভারি চার্জ",
-                outputTotalAmount: "মোট পরিমাণ: ",
-                outputTotalInfo: "সমস্ত চার্জ এবং ছাড় অন্তর্ভুক্ত।",
+                outputAdvance: "অগ্রিম পেইড",
+                outputTotalAmount: "মোট প্রদেয় পরিমাণ: ",
+                outputTotalInfo: "সমস্ত চার্জ, ছাড় এবং অগ্রিম পেমেন্ট অন্তর্ভুক্ত।",
                 downloadButton: "পিডিএফ ডাউনলোড করুন"
             },
             en: {
@@ -263,6 +275,8 @@
                 addressPlaceholder: "e.g., 123 Main St, Anytown, USA",
                 deliveryChargeLabel: "Delivery Charge (৳)",
                 discountLabel: "Discount (%)",
+                advanceLabel: "Advance Payment (৳)",
+                advancePlaceholder: "e.g., 20.00",
                 generateButton: "Generate Voucher",
                 outputCustomer: "Customer",
                 outputDate: "Date",
@@ -271,20 +285,28 @@
                 outputQuantity: "Quantity",
                 outputAddress: "Address",
                 outputDeliveryCharge: "Delivery Charge",
-                outputTotalAmount: "Total Amount: ",
-                outputTotalInfo: "Includes all charges and discounts.",
+                outputAdvance: "Advance Paid",
+                outputTotalAmount: "Total Due Amount: ",
+                outputTotalInfo: "Includes all charges, discounts, and advances.",
                 downloadButton: "Download PDF"
             }
         };
 
+        let currentLang = 'bn';
+
         function updateLanguage(lang) {
+            currentLang = lang;
             document.querySelectorAll('[data-i18n]').forEach(element => {
                 const key = element.getAttribute('data-i18n');
-                element.textContent = translations[lang][key];
+                if (translations[lang][key]) {
+                    element.textContent = translations[lang][key];
+                }
             });
             document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
                 const key = element.getAttribute('data-i18n-placeholder');
-                element.placeholder = translations[lang][key];
+                if (translations[lang][key]) {
+                    element.placeholder = translations[lang][key];
+                }
             });
         }
 
@@ -299,6 +321,8 @@
             const outputQuantity = document.getElementById('outputQuantity');
             const outputAddress = document.getElementById('outputAddress');
             const outputDeliveryCharge = document.getElementById('outputDeliveryCharge');
+            const outputAdvance = document.getElementById('outputAdvance');
+            const outputAdvanceContainer = document.getElementById('outputAdvanceContainer');
             const outputTotal = document.getElementById('outputTotal');
             const languageSelect = document.getElementById('language-select');
 
@@ -308,6 +332,10 @@
             // Handle language change
             languageSelect.addEventListener('change', (e) => {
                 updateLanguage(e.target.value);
+                // Trigger form submission to visually refresh calculated string values if output is active
+                if(voucherOutput.style.display === 'block') {
+                    voucherForm.dispatchEvent(new Event('submit'));
+                }
             });
 
             voucherForm.addEventListener('submit', (e) => {
@@ -322,6 +350,8 @@
                     const address = document.getElementById('address').value;
                     const deliveryCharge = parseFloat(document.getElementById('deliveryCharge').value) || 0;
                     const discount = parseFloat(document.getElementById('discount').value) || 0;
+                    const advance = parseFloat(document.getElementById('advance').value) || 0;
+                    
                     const currentDate = new Date().toLocaleDateString('en-US', {
                         year: 'numeric',
                         month: 'long',
@@ -331,7 +361,7 @@
                     // Calculate total
                     const subtotal = quantity * price;
                     const totalDiscount = subtotal * (discount / 100);
-                    const total = subtotal + deliveryCharge - totalDiscount;
+                    const total = (subtotal + deliveryCharge - totalDiscount) - advance;
 
                     // Update voucher fields
                     outputUserName.textContent = userName;
@@ -341,7 +371,16 @@
                     outputQuantity.textContent = quantity;
                     outputAddress.textContent = address;
                     outputDeliveryCharge.textContent = `৳${deliveryCharge.toFixed(2)}`;
-                    outputTotal.textContent = `৳${total.toFixed(2)}`;
+                    
+                    if (advance > 0) {
+                        outputAdvance.textContent = `৳${advance.toFixed(2)}`;
+                        outputAdvanceContainer.classList.remove('hidden');
+                    } else {
+                        outputAdvanceContainer.classList.add('hidden');
+                    }
+
+                    const labelPrefix = translations[currentLang]['outputTotalAmount'];
+                    outputTotal.textContent = `${labelPrefix}৳${total.toFixed(2)}`;
 
                     // Show the voucher and scroll to it
                     voucherOutput.style.display = 'block';
@@ -352,13 +391,14 @@
             });
 
             downloadPdfBtn.addEventListener('click', () => {
-                const phoneNumber = document.getElementById('phoneNumber').value;
-                // Clean the phone number by removing non-numeric characters and the '+' sign
-                const cleanedPhoneNumber = phoneNumber.replace(/[\+\-\s()]/g, '');
+                const userName = document.getElementById('userName').value;
                 
-                // Construct the new title for the file name
+                // Sanitize user code name to handle files safely
+                const cleanedUserName = userName.trim().toLowerCase().replace(/[^a-z0-9]/g, '_').replace(/__+/g, '_');
+                
+                // Construct static loyapy_product name joined with dynamic user code customer name
                 const originalTitle = document.title;
-                document.title = `${cleanedPhoneNumber}_loyapy_bill`;
+                document.title = `loyapy_product_${cleanedUserName}`;
 
                 // Use the browser's native print function to save as PDF
                 window.print();
